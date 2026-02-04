@@ -3,653 +3,821 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Corndogzo - Daily Game</title>
+    <title>ConexoTH - Daily Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* --- 1. CORE STYLES --- */
         :root {
             --bg-color: #0f172a;
-            --text-color: #ffffff;
-            --primary-blue: #009afe;
-            --primary-hover: #0080d6;
-            --success-green: #22c55e;
-            --warning-yellow: #eab308;
             --card-bg: #1e293b;
             --card-hover: #334155;
+            --primary-blue: #009afe;
+            --text-color: #ffffff;
+            --text-muted: #94a3b8;
+            --success-green: #22c55e;
+            --progress-yellow: #eab308;
+            --card-height: 60px;
+            --gap-size: 6px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Sarabun', sans-serif;
             background: var(--bg-color);
-            color: var(--text-color);
             min-height: 100vh;
+            padding: 20px;
+            color: var(--text-color);
             display: flex;
             justify-content: center;
+            font-size: 14px;
         }
 
         .container {
+            max-width: 450px;
             width: 100%;
-            max-width: 600px; /* จำกัดความกว้างให้เหมือนแอปมือถือ */
-            padding: 20px;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 90vh;
         }
 
-        /* --- Main Menu --- */
+        /* --- 2. MAIN MENU --- */
         .main-menu {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             flex: 1;
-            gap: 20px;
-        }
-
-        .logo-section {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .logo-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .game-title {
-            font-size: 2.5em;
-            font-weight: 800;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .game-desc {
-            color: #94a3b8;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-        }
-
-        .daily-card {
-            background: transparent;
-            border: 2px solid #334155;
-            border-radius: 16px;
-            padding: 20px;
             width: 100%;
+        }
+
+        .logo-section { margin-bottom: 30px; text-align: center; }
+        .logo-icon { font-size: 3.5em; display: block; margin-bottom: 5px; }
+        .game-logo-text { font-size: 2.2em; font-weight: 800; letter-spacing: 1px; }
+        .game-subtitle { color: var(--text-muted); font-size: 1em; margin-top: 5px; }
+
+        .daily-game-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .daily-game-card {
+            background: #1e293b;
+            border: 3px solid #334155; /* ขอบหนาขึ้น */
+            border-radius: 12px;
+            padding: 12px 20px;
+            width: auto; 
+            min-width: 280px; 
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            gap: 20px;
+            transition: transform 0.2s, border-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .daily-game-card:hover { 
+            transform: translateY(-2px);
+            border-color: var(--primary-blue);
         }
 
-        .daily-info h3 { font-size: 1.2em; font-weight: bold; }
-        .daily-info p { color: #94a3b8; font-size: 1.1em; margin-top: 5px; }
+        .daily-text-group { display: flex; flex-direction: column; text-align: left; }
+        .daily-label { font-size: 1.1em; font-weight: 700; color: white; }
+        .daily-date { font-size: 0.9em; color: var(--text-muted); margin-top: 2px; }
 
-        .play-btn {
+        .play-btn-small {
             background: var(--primary-blue);
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .play-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
-
-        .menu-list {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
         }
 
+        .menu-list { 
+            width: 100%; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        
         .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
             background: transparent;
-            color: #e2e8f0;
-            border: none;
-            font-size: 1.1em;
+            color: var(--text-muted);
+            border: 1px solid transparent;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 12px;
-            transition: background 0.3s;
-            text-decoration: none;
-        }
-        .menu-item:hover { background: rgba(255,255,255,0.05); }
-        .menu-item i { width: 25px; text-align: center; }
-
-        /* --- Calendar Screen --- */
-        .screen { display: none; width: 100%; }
-        .screen.active { display: block; }
-
-        .header-nav {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-top: 20px;
-        }
-        .back-btn {
-            background: none; border: none; color: white;
-            font-size: 1.5em; cursor: pointer; padding: 10px;
-        }
-        .header-title { flex: 1; text-align: center; font-size: 1.5em; font-weight: bold; }
-
-        .calendar-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 0 10px;
-        }
-        .month-nav-btn {
-            background: none; border: none; color: white;
-            font-size: 1.2em; cursor: pointer;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-        .day-name {
-            text-align: center; color: #64748b; font-size: 0.9em; margin-bottom: 10px;
-        }
-        .day-cell {
-            aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            background: transparent;
+            gap: 10px;
+            border-radius: 10px;
             transition: all 0.2s;
+            width: fit-content;
+            min-width: 180px;
         }
-        
-        /* Status Colors */
-        .day-cell.no-game { color: #334155; cursor: default; } /* จางๆ ไม่มีเกม */
-        .day-cell.available { background: transparent; border: 2px solid #334155; } /* มีเกม ยังไม่เล่น */
-        .day-cell.completed { background: var(--success-green); border: none; } /* จบแล้ว */
-        .day-cell.in-progress { background: var(--warning-yellow); color: #000; border: none; } /* ยังไม่จบ */
-        .day-cell.today { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(0,154,254,0.3); }
+        /* เอาเมาส์จ่อเมนูอื่นไม่ต้องมีขอบ */
+        .menu-item:hover { 
+            background: rgba(255,255,255,0.05); 
+            color: white; 
+        }
 
-        /* --- Game Screen (เอาของเดิมมาปรับ) --- */
-        .game-header { display: flex; align-items: center; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
-        .word-card {
-            background: var(--card-bg); height: 70px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 500; cursor: pointer; text-align: center; padding: 5px;
-            transition: all 0.2s; user-select: none;
+        /* --- 3. CALENDAR SYSTEM --- */
+        .calendar-header {
+            display: flex;
+            align-items: stretch; /* ให้ปุ่มสูงเท่ากัน */
+            padding: 5px 10px 15px 10px;
+            gap: 5px;
         }
-        .word-card.selected { background: var(--primary-blue); color: white; transform: translateY(-3px); }
-        .word-card.solved { opacity: 0; pointer-events: none; } /* ซ่อนเมื่อตอบถูกแล้ว เดี๋ยวไปโผล่ใน solved-groups */
-        .word-card.incorrect { animation: shake 0.4s; background: #ef4444; }
         
-        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+        /* ปุ่มซ้ายขวา และชื่อเดือน ชิดกัน */
+        .cal-nav-btn {
+            background: #1e293b; 
+            border: none; color: white;
+            font-size: 1em; cursor: pointer; padding: 10px 15px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        /* เมาส์จ่อแล้วไม่โปร่งใส */
+        .cal-nav-btn:hover:not(:disabled) { background: #334155; opacity: 1; }
+        .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
+
+        .cal-title {
+            background: #1e293b;
+            font-size: 1.1em; font-weight: 700; cursor: pointer;
+            padding: 10px; border-radius: 8px; 
+            flex: 1; /* ขยายเต็มพื้นที่ */
+            text-align: center;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .cal-title:hover { background: #334155; }
+
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 4px; padding: 0 10px; 
+        }
+        .day-name { text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; font-weight: bold; }
+        
+        .day-cell {
+            aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; font-weight: bold; position: relative;
+            background: transparent; border: 1px solid transparent;
+            cursor: pointer; transition: all 0.2s; font-size: 0.85em;
+        }
+        .day-cell.completed { background: var(--success-green); color: white; }
+        .day-cell.in-progress { background: var(--progress-yellow); color: #0f172a; }
+        .day-cell.available:hover { background: #334155; border-color: #475569; }
+        .day-cell.today-marker { border: 2px solid var(--primary-blue); box-shadow: 0 0 5px rgba(0,154,254,0.3); }
+        .day-cell.future, .day-cell.no-data { opacity: 0.2; cursor: default; pointer-events: none; }
+
+        /* Month Selector View */
+        .month-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-top: 10px; padding: 0 10px;
+        }
+        .month-cell {
+            background: transparent; /* พื้นหลังโปร่งใสก่อน */
+            border: 1px solid transparent;
+            padding: 15px 5px;
+            border-radius: 8px; text-align: center; cursor: pointer;
+            font-size: 0.9em; font-weight: 600;
+            transition: 0.2s;
+        }
+        /* เมาส์จ่อแล้วค่อยมีสี */
+        .month-cell:hover:not(.disabled) { background: var(--card-hover); color: white; }
+        .month-cell.active { background: var(--primary-blue) !important; color: white; }
+        
+        /* เดือนที่ไม่มีโจทย์ จางและกดไม่ได้ */
+        .month-cell.disabled {
+            opacity: 0.2;
+            cursor: default;
+            pointer-events: none;
+        }
+
+
+        /* --- 4. GAME SCREEN --- */
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .back-btn { background: transparent; color: white; border: none; font-size: 1.4em; cursor: pointer; padding: 5px; }
+        .screen-title { flex: 1; text-align: center; font-size: 1.4em; font-weight: bold; }
+
+        .stats-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: white; font-weight: 700; font-size: 0.95em; }
+        .stats-val { font-weight: 400; margin: 0 4px; color: white; }
+        
+        /* เว้นระยะห่าง ทาย กับ วันที่ ให้เหมือนกัน */
+        .stats-spacer { margin-right: 15px; }
+
+        .game-controls { display: flex; gap: 8px; }
+        .btn-small {
+            background: #334155; color: white; border: none;
+            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
+        }
+        .btn-small:hover:not(:disabled) { background: #475569; }
+
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
+        .word-card {
+            background: var(--card-bg); border-radius: 8px; height: var(--card-height);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
+            transition: 0.15s; user-select: none; padding: 2px;
+        }
+        .word-card:hover:not(.selected) { background: var(--card-hover); }
+        .word-card.selected { background: var(--primary-blue); color: white; }
+        .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
+        .word-card.fade-out { opacity: 0; transform: scale(0.9); transition: 0.3s; }
+        
+        @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
+
+        .btn-submit {
+            width: 100%; padding: 12px; border: 1px solid #334155; border-radius: 10px;
+            font-size: 1.1em; font-weight: bold; cursor: pointer;
+            background: #1e293b; color: white; transition: 0.2s;
+        }
+        .btn-submit:hover:not(:disabled) { background: #334155; }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .hint-triangle {
+            position: absolute; top: 0; right: 0; width: 0; height: 0;
+            border-style: solid; border-width: 0 15px 15px 0; pointer-events: none;
+        }
+
+        .win-card-inline {
+            background: #151e32; border-radius: 16px; padding: 20px;
+            text-align: center; margin: 0 auto 20px auto; width: 95%; display: none;
+        }
+        .emoji-grid { font-size: 1.5em; letter-spacing: 3px; margin-bottom: 15px; }
+        .share-btn {
+            background: var(--primary-blue); color: white; border: none;
+            padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
 
         .solved-group {
-            border-radius: 10px; padding: 15px; margin-bottom: 10px; text-align: center;
+            background: #334155; margin-bottom: 6px; padding: 5px 10px; border-radius: 8px;
+            text-align: center; height: var(--card-height); display: flex; flex-direction: column; justify-content: center;
             animation: fadeIn 0.5s;
         }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-        
-        .buttons-row { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .action-btn {
-            padding: 12px 20px; border-radius: 25px; border: 2px solid #334155;
-            background: transparent; color: white; cursor: pointer; font-weight: bold;
-        }
-        .action-btn:hover:not(:disabled) { background: #334155; }
-        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .submit-btn { background: #e2e8f0; color: #0f172a; border: none; }
-        .submit-btn:hover:not(:disabled) { background: white; }
-
-        /* Win Modal */
-        .win-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.9); z-index: 100;
-            display: none; justify-content: center; align-items: center;
-        }
-        .win-card {
-            background: var(--card-bg); padding: 30px; border-radius: 20px;
-            text-align: center; max-width: 90%; width: 400px;
-        }
-        .win-emoji { font-size: 4em; margin-bottom: 20px; }
-
-        /* Creator Tool (Admin) */
-        .creator-tool { display: none; padding: 20px; background: #1e293b; position: absolute; top:0; left:0; width:100%; min-height:100vh; z-index: 999; }
-        .creator-tool input { width: 100%; padding: 10px; margin-bottom: 10px; background: #0f172a; border: 1px solid #334155; color: white; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="mainMenu" class="main-menu screen active">
-            <div class="logo-section">
-                <span class="logo-icon">🌭</span>
-                <h1 class="game-title">CORNDOGZO</h1>
-                <p class="game-desc">Make 4 groups of 4 words that<br>have something in common</p>
-            </div>
-
-            <div class="daily-card">
-                <div class="daily-info">
-                    <h3>Daily game</h3>
-                    <p id="todayDateDisplay">--/--/----</p>
+        
+        <div id="mainMenu" class="screen active">
+            <div class="main-menu">
+                <div class="logo-section">
+                    <span class="logo-icon">🌭</span>
+                    <div class="game-logo-text">CONEXOTH</div>
+                    <div class="game-subtitle">จัดกลุ่มคำที่เกี่ยวข้องกัน</div>
                 </div>
-                <button class="play-btn" onclick="startDailyGame()">Play</button>
-            </div>
 
-            <div class="menu-list">
-                <button class="menu-item" onclick="showCalendar()">
-                    <i class="fa-regular fa-calendar"></i> Previous games
-                </button>
-                <button class="menu-item" onclick="window.open('https://forms.gle/YOUR_FORM_LINK', '_blank')">
-                    <i class="fa-regular fa-comment"></i> เสนอโจทย์
-                </button>
-                <button class="menu-item" onclick="alert('สร้างโดย ครูผู้สอนภาษาไทยและคณิตศาสตร์ ผู้ชื่นชอบ Coding!')">
-                    <i class="fa-solid fa-circle-info"></i> About
-                </button>
-                <button class="menu-item" style="opacity: 0.3; font-size: 0.8em;" onclick="toggleCreator()">
-                    <i class="fa-solid fa-tools"></i> Admin Tool
-                </button>
+                <div class="daily-game-wrapper">
+                    <div class="daily-game-card">
+                        <div class="daily-text-group">
+                            <div class="daily-label">โจทย์วันนี้</div>
+                            <div class="daily-date" id="dailyDateText">--/--/--</div>
+                        </div>
+                        <button class="play-btn-small" onclick="startDailyGame()">Play</button>
+                    </div>
+                </div>
+
+                <div class="menu-list">
+                    <button class="menu-item" onclick="openCalendar()">
+                        <i class="fa-regular fa-calendar"></i> เล่นย้อนหลัง
+                    </button>
+                    <button class="menu-item" onclick="window.open('https://forms.gle/XYZ', '_blank')">
+                        <i class="fa-solid fa-pen-to-square"></i> เสนอโจทย์
+                    </button>
+                    <button class="menu-item" onclick="window.open('#', '_blank')">
+                        <i class="fa-regular fa-comment-dots"></i> Feedback
+                    </button>
+                    <button class="menu-item" onclick="alert('พัฒนาโดยครูผู้สอนภาษาไทยและคณิตศาสตร์')">
+                        <i class="fa-solid fa-circle-info"></i> About
+                    </button>
+                </div>
             </div>
         </div>
 
         <div id="calendarScreen" class="screen">
-            <div class="header-nav">
+            <div class="game-header">
                 <button class="back-btn" onclick="showScreen('mainMenu')"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="header-title">Previous games</div>
-                <div style="width: 40px;"></div> </div>
-
-            <div class="calendar-controls">
-                <button class="month-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <h2 id="calendarMonthYear">February 2026</h2>
-                <button class="month-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="screen-title">เล่นย้อนหลัง</div>
+                <div style="width: 30px;"></div>
             </div>
 
-            <div class="calendar-grid">
-                <div class="day-name">Sun</div><div class="day-name">Mon</div><div class="day-name">Tue</div>
-                <div class="day-name">Wed</div><div class="day-name">Thu</div><div class="day-name">Fri</div>
-                <div class="day-name">Sat</div>
+            <div class="calendar-header">
+                <button class="cal-nav-btn" id="prevBtn" onclick="shiftCalendar(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <div class="cal-title" id="calTitleBtn" onclick="toggleMonthView()">February 2026</div>
+                <button class="cal-nav-btn" id="nextBtn" onclick="shiftCalendar(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
-            <div id="calendarDays" class="calendar-grid" style="margin-top: 10px;">
+
+            <div id="daysView">
+                <div class="calendar-grid">
+                    <div class="day-name">อา</div><div class="day-name">จ</div><div class="day-name">อ</div>
+                    <div class="day-name">พ</div><div class="day-name">พฤ</div><div class="day-name">ศ</div><div class="day-name">ส</div>
                 </div>
+                <div id="calendarDays" class="calendar-grid" style="margin-top: 5px;"></div>
+            </div>
+
+            <div id="monthsView" style="display: none;">
+                <div class="month-grid" id="monthList"></div>
+            </div>
         </div>
 
         <div id="gameScreen" class="screen">
-            <div class="header-nav">
-                <button class="back-btn" onclick="showScreen('mainMenu')"><i class="fa-solid fa-arrow-left"></i></button>
-                <div class="header-title">Corndogzo <span id="gameDateTitle" style="font-size: 0.6em; opacity: 0.7; display: block;"></span></div>
-                <div style="width: 40px;"></div>
+            <div class="game-header">
+                <button class="back-btn" onclick="backToCalendarOrMenu()">✕</button>
+                <div class="screen-title">ConexoTH</div>
+                <div style="width: 30px;"></div>
             </div>
-            
-            <div id="solvedContainer"></div>
-            <div id="gameGrid" class="grid"></div>
-            
-            <div class="buttons-row">
-                <button class="action-btn" onclick="shuffleGrid()">Shuffle</button>
-                <button class="action-btn submit-btn" id="submitBtn" onclick="submitGuess()" disabled>Submit</button>
+
+            <div id="winCard" class="win-card-inline">
+                <div style="font-size:1.5em; font-weight:bold; margin-bottom:10px;">🎉 ยินดีด้วย 🎉</div>
+                <div style="color:#cbd5e1; margin-bottom:15px;">
+                    คุณทายถูกใน <span id="finalGuess" style="color:#009afe; font-weight:bold;">0</span> ครั้ง<br>
+                    และใช้คำใบ้ <span id="finalHint" style="color:#009afe; font-weight:bold;">0</span> ครั้ง
+                </div>
+                <div class="emoji-grid" id="winHistory"></div>
+                <button class="share-btn" id="shareBtn" onclick="shareStats()">
+                    <i class="fa-solid fa-share-nodes"></i> แชร์
+                </button>
             </div>
-            
-            <div style="text-align: center; margin-top: 20px; color: #64748b;">
-                Mistakes remaining: <span id="livesDisplay">●●●●</span>
+
+            <div class="stats-row">
+                <div class="stats-info">
+                    <span id="gameDateLabel">--/--/----</span>
+                    <span class="stats-spacer"></span>
+                    ทาย: <span id="guessCount" class="stats-val">0</span> 
+                    <span class="stats-spacer"></span>
+                    คำใบ้: <span id="hintCount" class="stats-val">0</span>
+                </div>
+                <div class="game-controls">
+                    <button class="btn-small" id="shuffleBtn" onclick="shuffleWords()">🔀 สลับตำแหน่ง</button>
+                    <button class="btn-small" id="hintBtn" onclick="useHint()">💡 คำใบ้</button>
+                </div>
             </div>
+
+            <div id="solvedGroups"></div>
+            <div class="grid" id="grid"></div>
+            
+            <button class="btn-submit" id="submitBtn" disabled onclick="checkAnswer()">ส่งคำตอบ</button>
         </div>
+
     </div>
 
-    <div id="resultOverlay" class="win-overlay">
-        <div class="win-card">
-            <div class="win-emoji" id="resultEmoji">🎉</div>
-            <h2 id="resultTitle">Great Job!</h2>
-            <p id="resultDesc" style="margin: 15px 0; color: #94a3b8;">Next daily game in: <span id="countdown">--:--:--</span></p>
-            <button class="play-btn" onclick="showScreen('calendarScreen'); document.getElementById('resultOverlay').style.display='none'">See History</button>
-        </div>
-    </div>
-
-    <div id="creatorTool" class="creator-tool">
-        <h2>Create New Game JSON</h2>
-        <p style="color: #aaa; margin-bottom: 20px;">กรอกข้อมูลแล้วกด Generate เพื่อได้โค้ดไปแปะในตัวแปร database</p>
-        
-        <div id="creatorInputs"></div>
-        
-        <button class="play-btn" onclick="generateJson()">Generate JSON to Console</button>
-        <button class="action-btn" onclick="toggleCreator()">Close</button>
-    </div>
+    <script src="games.js"></script>
 
     <script>
-        // --- 1. DATABASE (ส่วนนี้คือส่วนที่คุณต้องมาแก้เพื่อเพิ่มโจทย์) ---
-        // รูปแบบ: 'YYYY-MM-DD': { groups: [...] }
-        const gamesDatabase = {
-            "2026-02-04": {
-                groups: [
-                    { category: "ผลไม้สีแดง", words: ["แอปเปิ้ล", "เชอร์รี่", "สตรอว์เบอร์รี่", "แตงโม"], color: "#ef4444" },
-                    { category: "สัตว์เลี้ยง", words: ["แมว", "สุนัข", "แฮมสเตอร์", "กระต่าย"], color: "#eab308" },
-                    { category: "เครื่องเขียน", words: ["ดินสอ", "ปากกา", "ยางลบ", "ไม้บรรทัด"], color: "#22c55e" },
-                    { category: "ดาวเคราะห์", words: ["โลก", "อังคาร", "พฤหัส", "ศุกร์"], color: "#3b82f6" }
-                ]
-            },
-            "2026-02-03": {
-                groups: [
-                    { category: "Example Group 1", words: ["A1", "A2", "A3", "A4"], color: "#ef4444" },
-                    { category: "Example Group 2", words: ["B1", "B2", "B3", "B4"], color: "#eab308" },
-                    { category: "Example Group 3", words: ["C1", "C2", "C3", "C4"], color: "#22c55e" },
-                    { category: "Example Group 4", words: ["D1", "D2", "D3", "D4"], color: "#3b82f6" }
-                ]
-            }
-        };
-
-        // --- 2. STATE MANAGEMENT ---
-        let currentViewDate = new Date();
-        let playingDate = null;
+        // --- STATE VARIABLES ---
+        let currentViewDate = new Date(); 
+        let isMonthPickerMode = false;
+        
+        let currentGameDateStr = null;
+        let gameData = null;
+        let currentWords = [];
         let selectedWords = [];
-        let mistakes = 0;
-        let gameFinished = false;
-        
-        // Load progress from LocalStorage
-        let userProgress = JSON.parse(localStorage.getItem('corndogzo_progress')) || {};
-        // Structure: { "2026-02-04": { status: "completed" | "in_progress", solvedIndices: [0,2], mistakes: 1 } }
+        let solvedGroups = [];
+        let guessCount = 0;
+        let hintUsedCount = 0;
+        let gameHistory = [];
+        let currentHintGroup = null;
+        let hintWordsShownCount = 0;
+        let fromScreen = 'mainMenu';
 
-        function getTodayString() {
-            const d = new Date();
-            const year = d.getFullYear();
-            const month = String(d.getMonth() + 1).padStart(2, '0');
+        const STORAGE_KEY = 'conexo_th_progress';
+        let userProgress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+
+        // --- HELPER FUNCTIONS ---
+        function getThaiDate() {
+            return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
+        }
+
+        function getTodayStr() {
+            const d = getThaiDate();
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
+            return `${y}-${m}-${day}`;
         }
 
-        // --- 3. UI FUNCTIONS ---
-        
+        function formatDisplayDate(dateStr) {
+            // YYYY-MM-DD -> 4/2/2026
+            const [y, m, d] = dateStr.split('-');
+            return `${parseInt(d)}/${parseInt(m)}/${y}`;
+        }
+
+        function hasGamesInMonth(year, monthIndex) {
+            // monthIndex 0-11
+            // Check if gamesDatabase has any key starting with "YYYY-MM"
+            const prefix = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
+            // ตรวจสอบว่ามีคีย์ไหนใน database ที่ขึ้นต้นด้วย prefix นี้ไหม
+            return Object.keys(gamesDatabase).some(key => key.startsWith(prefix));
+        }
+
+        // --- INIT ---
         function init() {
-            const today = getTodayString();
-            document.getElementById('todayDateDisplay').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-            renderCalendar(currentViewDate);
-            
-            // Generate Input fields for Creator Tool
-            const creatorDiv = document.getElementById('creatorInputs');
-            for(let i=1; i<=4; i++) {
-                creatorDiv.innerHTML += `
-                    <div style="background:#0f172a; padding:10px; margin-bottom:10px;">
-                        <h4>Group ${i}</h4>
-                        <input type="text" placeholder="Category Name" id="c_cat_${i}">
-                        <input type="text" placeholder="Word 1, Word 2, Word 3, Word 4" id="c_words_${i}">
-                        <input type="color" value="#ef4444" id="c_color_${i}" style="height:30px;">
-                    </div>
-                `;
-            }
+            const todayStr = getTodayStr();
+            document.getElementById('dailyDateText').textContent = formatDisplayDate(todayStr);
+            // ตั้งค่าปฏิทินเริ่มต้นเป็นปัจจุบัน
+            currentViewDate = getThaiDate(); 
         }
 
+        // --- NAVIGATION ---
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            if(screenId === 'calendarScreen') renderCalendar(currentViewDate);
         }
 
-        function startDailyGame() {
-            loadGame(getTodayString());
+        function openCalendar() {
+            fromScreen = 'calendarScreen';
+            currentViewDate = getThaiDate(); 
+            isMonthPickerMode = false;
+            renderCalendar();
+            showScreen('calendarScreen');
         }
 
-        function toggleCreator() {
-            const tool = document.getElementById('creatorTool');
-            tool.style.display = tool.style.display === 'block' ? 'none' : 'block';
-        }
-
-        // --- 4. CALENDAR LOGIC ---
-
-        function changeMonth(delta) {
-            currentViewDate.setMonth(currentViewDate.getMonth() + delta);
-            renderCalendar(currentViewDate);
-        }
-
-        function renderCalendar(date) {
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            
-            document.getElementById('calendarMonthYear').textContent = `${monthNames[month]} ${year}`;
-            
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = getTodayString();
-            
-            const container = document.getElementById('calendarDays');
-            container.innerHTML = '';
-
-            // Blank slots for previous month
-            for (let i = 0; i < firstDay; i++) {
-                container.appendChild(document.createElement('div'));
+        function backToCalendarOrMenu() {
+            if (fromScreen === 'calendarScreen') {
+                showScreen('calendarScreen');
+                renderCalendar();
+            } else {
+                showScreen('mainMenu');
             }
+        }
 
-            // Days
-            for (let i = 1; i <= daysInMonth; i++) {
-                const dayStr = String(i).padStart(2, '0');
-                const monthStr = String(month + 1).padStart(2, '0');
-                const dateKey = `${year}-${monthStr}-${dayStr}`;
+        // --- CALENDAR LOGIC ---
+        function toggleMonthView() {
+            isMonthPickerMode = !isMonthPickerMode;
+            renderCalendar();
+        }
+
+        function shiftCalendar(delta) {
+            if (isMonthPickerMode) {
+                // ปีเปลี่ยนได้
+                currentViewDate.setFullYear(currentViewDate.getFullYear() + delta);
+            } else {
+                // เลื่อนเดือน
+                currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+            }
+            renderCalendar();
+        }
+
+        function selectMonth(monthIndex) {
+            currentViewDate.setMonth(monthIndex);
+            isMonthPickerMode = false;
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const year = currentViewDate.getFullYear();
+            const month = currentViewDate.getMonth();
+            const todayStr = getTodayStr();
+            
+            const monthNamesThai = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            
+            if (isMonthPickerMode) {
+                // YEAR VIEW (เลือกเดือน)
+                document.getElementById('calTitleBtn').textContent = `${year}`; // เอา (พ.ศ.) ออก
+                document.getElementById('daysView').style.display = 'none';
+                document.getElementById('monthsView').style.display = 'block';
                 
-                const cell = document.createElement('div');
-                cell.className = 'day-cell';
-                cell.textContent = i;
+                // เช็คว่าปีนี้มีโจทย์ไหม
+                const hasGamesThisYear = Object.keys(gamesDatabase).some(k => k.startsWith(`${year}`));
+                // ปุ่มซ้ายขวา (ปี) ถ้าไม่มีโจทย์เลยให้จาง (Logic คร่าวๆ)
+                // เพื่อความง่าย อนุญาตให้เลื่อนปีได้ แต่เดือนข้างในจะกดไม่ได้ถ้าไม่มีโจทย์
 
-                if (dateKey === todayStr) cell.classList.add('today');
+                document.getElementById('prevBtn').disabled = false;
+                document.getElementById('nextBtn').disabled = false;
 
-                const hasGame = gamesDatabase[dateKey];
-                const progress = userProgress[dateKey];
-
-                if (!hasGame) {
-                    cell.classList.add('no-game');
-                } else {
-                    if (progress && progress.status === 'completed') {
-                        cell.classList.add('completed');
-                    } else if (progress && progress.status === 'in_progress') {
-                        cell.classList.add('in_progress');
-                    } else {
-                        cell.classList.add('available');
+                const monthList = document.getElementById('monthList');
+                monthList.innerHTML = '';
+                
+                monthNamesThai.forEach((mName, idx) => {
+                    const el = document.createElement('div');
+                    el.className = 'month-cell';
+                    if (idx === month) el.classList.add('active');
+                    
+                    // เช็คว่าเดือนนี้มีโจทย์ไหม
+                    const hasGame = hasGamesInMonth(year, idx);
+                    if (!hasGame) {
+                        el.classList.add('disabled'); // จางและกดไม่ได้
                     }
-                    cell.onclick = () => loadGame(dateKey);
+
+                    el.textContent = mName;
+                    el.onclick = () => {
+                        if (hasGame) selectMonth(idx);
+                    };
+                    monthList.appendChild(el);
+                });
+
+            } else {
+                // DAY VIEW
+                document.getElementById('calTitleBtn').textContent = `${monthNamesThai[month]} ${year}`;
+                document.getElementById('daysView').style.display = 'block';
+                document.getElementById('monthsView').style.display = 'none';
+
+                // Check Navigation Arrows availability
+                // Previous Month Check
+                let prevDate = new Date(year, month - 1, 1);
+                let hasPrevGames = hasGamesInMonth(prevDate.getFullYear(), prevDate.getMonth());
+                document.getElementById('prevBtn').disabled = !hasPrevGames;
+
+                // Next Month Check
+                let nextDate = new Date(year, month + 1, 1);
+                let hasNextGames = hasGamesInMonth(nextDate.getFullYear(), nextDate.getMonth());
+                document.getElementById('nextBtn').disabled = !hasNextGames;
+
+
+                const daysContainer = document.getElementById('calendarDays');
+                daysContainer.innerHTML = '';
+
+                const firstDay = new Date(year, month, 1).getDay();
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+                for (let i = 0; i < firstDay; i++) daysContainer.appendChild(document.createElement('div'));
+
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dStr = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                    const el = document.createElement('div');
+                    el.className = 'day-cell';
+                    el.textContent = i;
+
+                    if (dStr === todayStr) el.classList.add('today-marker');
+
+                    if (dStr > todayStr) {
+                        el.classList.add('future'); 
+                    } else if (!gamesDatabase[dStr]) {
+                        el.classList.add('no-data'); 
+                    } else {
+                        const prog = userProgress[dStr];
+                        if (prog) {
+                            if (prog.status === 'finished') {
+                                el.classList.add('completed');
+                            } else if (prog.status === 'playing' && (prog.guessCount > 0 || prog.hintUsedCount > 0)) {
+                                el.classList.add('in-progress');
+                            } else {
+                                el.classList.add('available'); 
+                            }
+                        } else {
+                            el.classList.add('available'); 
+                        }
+                        el.onclick = () => loadGame(dStr);
+                    }
+                    daysContainer.appendChild(el);
                 }
-                
-                container.appendChild(cell);
             }
         }
 
-        // --- 5. GAME LOGIC ---
-        let currentWordsObj = []; // { word: "X", groupIndex: 0, solved: false }
-        let currentGroups = [];
 
-        function loadGame(dateKey) {
-            if (!gamesDatabase[dateKey]) {
-                alert("ยังไม่มีเกมสำหรับวันนี้");
+        // --- GAME ENGINE ---
+        function startDailyGame() {
+            fromScreen = 'mainMenu';
+            loadGame(getTodayStr());
+        }
+
+        function loadGame(dateStr) {
+            if (!gamesDatabase[dateStr]) {
+                alert("ยังไม่มีโจทย์สำหรับวันนี้");
                 return;
             }
 
-            playingDate = dateKey;
-            currentGroups = gamesDatabase[dateKey].groups;
-            
-            // Check saved progress
-            const progress = userProgress[dateKey] || { status: 'not_started', solvedIndices: [], mistakes: 0 };
-            mistakes = progress.mistakes || 0;
-            
-            // Setup words
-            currentWordsObj = [];
-            currentGroups.forEach((group, gIndex) => {
-                // ถ้ากลุ่มนี้ตอบถูกไปแล้ว ไม่ต้องใส่ลงใน grid
-                if (progress.solvedIndices.includes(gIndex)) return;
-                
-                group.words.forEach(word => {
-                    currentWordsObj.push({ word: word, groupIndex: gIndex });
+            currentGameDateStr = dateStr;
+            gameData = gamesDatabase[dateStr];
+            document.getElementById('gameDateLabel').textContent = formatDisplayDate(dateStr);
+
+            const saved = userProgress[dateStr];
+            if (saved) {
+                guessCount = saved.guessCount || 0;
+                hintUsedCount = saved.hintUsedCount || 0;
+                solvedGroups = saved.solvedGroups || [];
+                gameHistory = saved.gameHistory || [];
+                currentWords = [];
+                gameData.groups.forEach((g, i) => {
+                    if (!solvedGroups.includes(i)) {
+                        g.words.forEach(w => currentWords.push({ word: w, groupIndex: i }));
+                    }
                 });
-            });
+                if (saved.status === 'playing') currentWords.sort(() => Math.random() - 0.5);
 
-            // Shuffle
-            currentWordsObj.sort(() => Math.random() - 0.5);
+            } else {
+                guessCount = 0; hintUsedCount = 0; solvedGroups = []; gameHistory = [];
+                currentWords = [];
+                gameData.groups.forEach((g, i) => {
+                    g.words.forEach(w => currentWords.push({ word: w, groupIndex: i }));
+                });
+                currentWords.sort(() => Math.random() - 0.5);
+                saveProgress('playing');
+            }
 
-            // Render
-            document.getElementById('gameDateTitle').textContent = dateKey;
-            renderGameBoard(progress.solvedIndices);
+            selectedWords = [];
+            currentHintGroup = null;
+            hintWordsShownCount = 0;
+            
+            renderGameUI();
             showScreen('gameScreen');
-        }
 
-        function renderGameBoard(solvedIndices = []) {
-            const grid = document.getElementById('gameGrid');
-            const solvedContainer = document.getElementById('solvedContainer');
-            
-            grid.innerHTML = '';
-            solvedContainer.innerHTML = '';
-
-            // Render Solved Groups
-            solvedIndices.forEach(idx => {
-                const group = currentGroups[idx];
-                const div = document.createElement('div');
-                div.className = 'solved-group';
-                div.style.backgroundColor = group.color;
-                div.innerHTML = `<h3>${group.category}</h3><p>${group.words.join(', ')}</p>`;
-                solvedContainer.appendChild(div);
-            });
-
-            // Render Available Words
-            currentWordsObj.forEach((item, index) => {
-                const card = document.createElement('div');
-                card.className = 'word-card';
-                card.textContent = item.word;
-                card.dataset.index = index;
-                card.onclick = () => selectCard(card, item);
-                grid.appendChild(card);
-            });
-            
-            updateLives();
-            
-            if (currentWordsObj.length === 0) {
-                gameComplete();
+            if (solvedGroups.length === 4) {
+                showWinState();
+            } else {
+                document.getElementById('winCard').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'block';
+                document.getElementById('hintBtn').disabled = false;
             }
         }
 
-        function selectCard(card, item) {
+        function renderGameUI() {
+            document.getElementById('guessCount').textContent = guessCount;
+            document.getElementById('hintCount').textContent = hintUsedCount;
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('shuffleBtn').disabled = solvedGroups.length === 4;
+            
+            const solvedContainer = document.getElementById('solvedGroups');
+            solvedContainer.innerHTML = '';
+            solvedGroups.forEach(gIdx => {
+                const group = gameData.groups[gIdx];
+                const d = document.createElement('div');
+                d.className = 'solved-group';
+                d.style.backgroundColor = group.color;
+                d.innerHTML = `<h3 style="color:white; margin:0; font-size:1em;">${group.category}</h3><p style="color:white; opacity:0.9; margin:2px 0 0 0; font-size:0.9em;">${group.words.join(', ')}</p>`;
+                solvedContainer.appendChild(d);
+            });
+
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            currentWords.forEach(obj => {
+                const c = document.createElement('div');
+                c.className = 'word-card';
+                c.textContent = obj.word;
+                c.dataset.word = obj.word;
+                c.dataset.group = obj.groupIndex;
+                c.onclick = () => selectCard(c);
+                grid.appendChild(c);
+            });
+        }
+
+        function selectCard(card) {
+            if (card.classList.contains('fade-out')) return;
             if (card.classList.contains('selected')) {
                 card.classList.remove('selected');
-                selectedWords = selectedWords.filter(w => w.cardIndex !== card.dataset.index);
+                selectedWords = selectedWords.filter(c => c !== card);
             } else {
                 if (selectedWords.length < 4) {
                     card.classList.add('selected');
-                    selectedWords.push({ word: item.word, groupIndex: item.groupIndex, cardIndex: card.dataset.index });
+                    selectedWords.push(card);
                 }
             }
-            
             document.getElementById('submitBtn').disabled = selectedWords.length !== 4;
         }
 
-        function submitGuess() {
+        function checkAnswer() {
             if (selectedWords.length !== 4) return;
+            guessCount++;
+            
+            const firstIdx = parseInt(selectedWords[0].dataset.group);
+            const isMatch = selectedWords.every(c => parseInt(c.dataset.group) === firstIdx);
 
-            const firstGroup = selectedWords[0].groupIndex;
-            const isCorrect = selectedWords.every(w => w.groupIndex === firstGroup);
-
-            if (isCorrect) {
-                // Save Progress
-                if (!userProgress[playingDate]) userProgress[playingDate] = { status: 'in_progress', solvedIndices: [], mistakes: 0 };
-                userProgress[playingDate].solvedIndices.push(firstGroup);
-                userProgress[playingDate].status = 'in_progress';
-                saveProgress();
-
-                // Animation & Remove words
-                const indicesToRemove = selectedWords.map(w => w.word);
-                currentWordsObj = currentWordsObj.filter(w => !indicesToRemove.includes(w.word));
+            if (isMatch) {
+                const group = gameData.groups[firstIdx];
+                gameHistory.push({ type: 'correct', color: group.color });
                 
-                selectedWords = [];
-                renderGameBoard(userProgress[playingDate].solvedIndices);
+                const grid = document.getElementById('grid');
+                selectedWords.forEach(c => grid.insertBefore(c, grid.firstChild));
+                
+                requestAnimationFrame(() => {
+                    selectedWords.forEach(c => {
+                        c.classList.remove('selected');
+                        c.style.backgroundColor = group.color;
+                        c.style.color = 'white';
+                    });
+                    setTimeout(() => {
+                        selectedWords.forEach(c => c.classList.add('fade-out'));
+                        setTimeout(() => {
+                            solvedGroups.push(firstIdx);
+                            currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                            selectedWords = [];
+                            document.getElementById('submitBtn').disabled = true;
+                            currentHintGroup = null;
+                            hintWordsShownCount = 0;
+                            document.getElementById('hintBtn').disabled = false;
+                            renderGameUI(); 
+                            saveProgress();
+                            if (solvedGroups.length === 4) {
+                                saveProgress('finished');
+                                setTimeout(showWinState, 500);
+                            }
+                        }, 300);
+                    }, 600);
+                });
+
             } else {
-                // Wrong
-                mistakes++;
-                const isOneAway = checkOneAway();
-                
-                document.querySelectorAll('.word-card.selected').forEach(c => {
+                gameHistory.push({ type: 'wrong' });
+                selectedWords.forEach(c => {
                     c.classList.add('incorrect');
                     setTimeout(() => c.classList.remove('incorrect'), 500);
                 });
-                
-                if(isOneAway) {
-                    const btn = document.getElementById('submitBtn');
-                    const originalText = btn.textContent;
-                    btn.textContent = "One away!";
-                    setTimeout(() => btn.textContent = originalText, 1000);
-                }
-
-                if (!userProgress[playingDate]) userProgress[playingDate] = { status: 'in_progress', solvedIndices: [], mistakes: 0 };
-                userProgress[playingDate].mistakes = mistakes;
-                saveProgress();
-                updateLives();
+                setTimeout(() => {
+                    selectedWords.forEach(c => c.classList.remove('selected'));
+                    selectedWords = [];
+                    document.getElementById('submitBtn').disabled = true;
+                }, 600);
+                saveProgress('playing');
             }
-            
-            document.getElementById('submitBtn').disabled = true;
-            document.querySelectorAll('.word-card.selected').forEach(c => c.classList.remove('selected'));
-            selectedWords = [];
+            document.getElementById('guessCount').textContent = guessCount;
         }
 
-        function checkOneAway() {
-            const counts = {};
-            selectedWords.forEach(w => {
-                counts[w.groupIndex] = (counts[w.groupIndex] || 0) + 1;
+        function useHint() {
+            const unsolvedIndices = gameData.groups.map((g, i) => i).filter(i => !solvedGroups.includes(i));
+            if (unsolvedIndices.length === 0) return;
+
+            if (currentHintGroup !== null && solvedGroups.includes(currentHintGroup)) {
+                currentHintGroup = null; hintWordsShownCount = 0;
+            }
+            if (currentHintGroup === null) {
+                currentHintGroup = unsolvedIndices[Math.floor(Math.random() * unsolvedIndices.length)];
+                hintWordsShownCount = 0;
+            }
+            if (hintWordsShownCount >= 3) {
+                document.getElementById('hintBtn').disabled = true;
+                return;
+            }
+
+            const targets = Array.from(document.querySelectorAll('.word-card')).filter(c => 
+                parseInt(c.dataset.group) === currentHintGroup && !c.querySelector('.hint-triangle')
+            );
+
+            if (targets.length > 0) {
+                const card = targets[Math.floor(Math.random() * targets.length)];
+                const tri = document.createElement('div');
+                tri.className = 'hint-triangle';
+                tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
+                card.appendChild(tri);
+
+                hintWordsShownCount++;
+                hintUsedCount++;
+                gameHistory.push({ type: 'hint' });
+                document.getElementById('hintCount').textContent = hintUsedCount;
+                if (hintWordsShownCount >= 3) document.getElementById('hintBtn').disabled = true;
+                saveProgress('playing');
+            }
+        }
+
+        function shuffleWords() {
+            const grid = document.getElementById('grid');
+            const cards = Array.from(grid.children);
+            for (let i = cards.length; i >= 0; i--) {
+                grid.appendChild(grid.children[Math.random() * i | 0]);
+            }
+        }
+
+        function saveProgress(status) {
+            if (!currentGameDateStr) return;
+            userProgress[currentGameDateStr] = {
+                status: status || (solvedGroups.length === 4 ? 'finished' : 'playing'),
+                guessCount, hintUsedCount, solvedGroups, gameHistory
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(userProgress));
+        }
+
+        function showWinState() {
+            let h = "";
+            gameHistory.forEach(x => {
+                if(x.type === 'wrong') h += '❌';
+                else if(x.type === 'hint') h += '💡';
+                else {
+                    const c = x.color;
+                    if(c==='#c2410c') h+='🟧'; else if(c==='#047857') h+='🟩'; 
+                    else if(c==='#0e7490') h+='🟦'; else h+='🟪';
+                }
             });
-            return Object.values(counts).includes(3);
+            document.getElementById('winHistory').textContent = h;
+            document.getElementById('finalGuess').textContent = guessCount;
+            document.getElementById('finalHint').textContent = hintUsedCount;
+            document.getElementById('winCard').style.display = 'block';
+            document.getElementById('submitBtn').style.display = 'none';
         }
 
-        function updateLives() {
-            const maxLives = 4;
-            let dots = "";
-            for(let i=0; i<maxLives-mistakes; i++) dots += "●";
-            document.getElementById('livesDisplay').textContent = dots || "Sudden Death!";
+        function shareStats() {
+            const text = `ConexoTH ${formatDisplayDate(currentGameDateStr)}\nทาย: ${guessCount} | คำใบ้: ${hintUsedCount}\n${document.getElementById('winHistory').textContent}`;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('shareBtn');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
+                setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> แชร์', 2000);
+            });
         }
 
-        function shuffleGrid() {
-            currentWordsObj.sort(() => Math.random() - 0.5);
-            renderGameBoard(userProgress[playingDate]?.solvedIndices || []);
-            selectedWords = [];
-            document.getElementById('submitBtn').disabled = true;
-        }
-
-        function gameComplete() {
-            userProgress[playingDate].status = 'completed';
-            saveProgress();
-            document.getElementById('resultEmoji').textContent = '🎉';
-            document.getElementById('resultTitle').textContent = 'Perfect!';
-            document.getElementById('resultOverlay').style.display = 'flex';
-        }
-
-        function saveProgress() {
-            localStorage.setItem('corndogzo_progress', JSON.stringify(userProgress));
-        }
-
-        // --- 6. ADMIN / GENERATOR ---
-        function generateJson() {
-            const groups = [];
-            for(let i=1; i<=4; i++) {
-                const cat = document.getElementById(`c_cat_${i}`).value;
-                const wordsStr = document.getElementById(`c_words_${i}`).value;
-                const color = document.getElementById(`c_color_${i}`).value;
-                
-                if(cat && wordsStr) {
-                    groups.push({
-                        category: cat,
-                        words: wordsStr.split(',').map(s => s.trim()),
-                        color: color
-                    });
-                }
-            }
-            
-            const dateKey = prompt("Enter Date (YYYY-MM-DD):", getTodayString());
-            const jsonOutput = `"${dateKey}": { "groups": ${JSON.stringify(groups)} },`;
-            console.log("--- COPY BELOW THIS LINE ---");
-            console.log(jsonOutput);
-            alert("JSON generated in Console (F12) -> Console tab\nCopy it and paste into 'gamesDatabase' variable.");
-        }
-
-        // Run
         init();
-
     </script>
 </body>
 </html>
