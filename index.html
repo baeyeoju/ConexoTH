@@ -57,114 +57,52 @@
         .game-logo-text { font-size: 2.2em; font-weight: 800; letter-spacing: 1px; }
         .game-subtitle { color: var(--text-muted); font-size: 1em; margin-top: 5px; }
 
-        .daily-game-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
-
+        .daily-game-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 25px; }
         .daily-game-card {
-            background: #1e293b;
-            border: 3px solid #334155;
-            border-radius: 12px;
-            padding: 12px 20px;
-            width: auto; 
-            min-width: 280px; 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 20px;
-            transition: transform 0.2s, border-color 0.2s;
+            background: #1e293b; border: 3px solid #334155; border-radius: 12px;
+            padding: 12px 20px; width: auto; min-width: 280px; 
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 20px; transition: transform 0.2s, border-color 0.2s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .daily-game-card:hover { 
-            transform: translateY(-2px);
-            border-color: var(--primary-blue);
-        }
-
+        .daily-game-card:hover { transform: translateY(-2px); border-color: var(--primary-blue); }
         .daily-text-group { display: flex; flex-direction: column; text-align: left; }
         .daily-label { font-size: 1.1em; font-weight: 700; color: white; }
         .daily-date { font-size: 0.9em; color: var(--text-muted); margin-top: 2px; }
 
         .play-btn-small {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 700;
-            cursor: pointer;
+            background: var(--primary-blue); color: white; border: none;
+            padding: 8px 20px; border-radius: 8px; font-size: 1em; font-weight: 700; cursor: pointer;
         }
 
-        .menu-list { 
-            width: 100%; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            gap: 12px; 
-        }
-        
+        .menu-list { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
         .menu-item {
-            background: transparent;
-            color: var(--text-muted);
-            border: 1px solid transparent;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            border-radius: 10px;
-            transition: all 0.2s;
-            width: fit-content;
-            min-width: 180px;
+            background: transparent; color: var(--text-muted); border: 1px solid transparent;
+            padding: 10px 20px; font-size: 1em; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            border-radius: 10px; transition: all 0.2s; width: fit-content; min-width: 180px;
         }
-        .menu-item:hover { 
-            background: rgba(255,255,255,0.05); 
-            color: white; 
-        }
+        .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
 
         /* --- 3. CALENDAR SYSTEM --- */
-        .calendar-header {
-            display: flex;
-            align-items: stretch;
-            padding: 5px 10px 15px 10px;
-            gap: 5px;
-        }
-        
+        .calendar-header { display: flex; align-items: stretch; padding: 5px 10px 15px 10px; gap: 5px; }
         .cal-nav-btn {
-            background: #1e293b; 
-            border: none; color: white;
-            font-size: 1em; cursor: pointer; padding: 10px 15px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
+            background: #1e293b; border: none; color: white; font-size: 1em; cursor: pointer;
+            padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
         }
         .cal-nav-btn:hover:not(:disabled) { background: #334155; opacity: 1; }
         .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
 
         .cal-title {
-            background: transparent;
-            font-size: 1.1em; font-weight: 700; cursor: pointer;
-            padding: 10px; border-radius: 8px; 
-            flex: 1;
-            text-align: center;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
+            background: transparent; font-size: 1.1em; font-weight: 700; cursor: pointer;
+            padding: 10px; border-radius: 8px; flex: 1; text-align: center;
+            display: flex; align-items: center; justify-content: center; transition: background 0.2s;
         }
         .cal-title:hover { background: #334155; }
 
-        .calendar-grid { 
-            display: grid; 
-            grid-template-columns: repeat(7, 1fr); 
-            gap: 4px; padding: 0 10px; 
-        }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 10px; }
         .day-name { text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; font-weight: bold; }
-        
         .day-cell {
             aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; font-weight: bold; position: relative;
@@ -177,17 +115,10 @@
         .day-cell.today-marker { border: 2px solid var(--primary-blue); box-shadow: 0 0 5px rgba(0,154,254,0.3); }
         .day-cell.future, .day-cell.no-data { opacity: 0.2; cursor: default; pointer-events: none; }
 
-        .month-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            margin-top: 10px; padding: 0 10px;
-        }
+        .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; padding: 0 10px; }
         .month-cell {
-            background: transparent;
-            border: 1px solid transparent;
-            padding: 15px 5px;
-            border-radius: 8px; text-align: center; cursor: pointer;
-            font-size: 0.9em; font-weight: 600;
-            transition: 0.2s;
+            background: transparent; border: 1px solid transparent; padding: 15px 5px;
+            border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: 0.2s;
         }
         .month-cell:hover:not(.disabled) { background: var(--card-hover); color: white; }
         .month-cell.active { background: var(--primary-blue) !important; color: white; }
@@ -198,18 +129,29 @@
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .back-btn { background: transparent; color: white; border: none; font-size: 1.4em; cursor: pointer; padding: 5px; }
         .screen-title { flex: 1; text-align: center; font-size: 1.4em; font-weight: bold; }
 
-        .stats-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: white; font-weight: 700; font-size: 0.95em; }
-        .stats-val { font-weight: 400; margin: 0 4px; color: white; }
-        .stats-spacer { margin-right: 15px; }
+        /* Stats Row - ปรับลดระยะห่างตามสั่ง */
+        .stats-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 15px; 
+            color: white; 
+            font-weight: 700; 
+            font-size: 0.85em; /* ลดขนาดฟอนต์ลงเล็กน้อยเพื่อมือถือ */
+            white-space: nowrap; /* ห้ามตัดบรรทัด */
+        }
+        .stats-val { font-weight: 400; margin: 0 2px; color: white; }
+        /* ลดระยะห่าง spacer */
+        .stats-spacer { display: inline-block; width: 6px; } 
 
-        .game-controls { display: flex; gap: 8px; }
+        .game-controls { display: flex; gap: 6px; }
         .btn-small {
             background: #334155; color: white; border: none;
-            padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
+            padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
         }
         .btn-small:hover:not(:disabled) { background: #475569; }
         .btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -228,7 +170,16 @@
         .word-card.selected { background: var(--primary-blue); color: white; }
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
         .word-card.fade-out { opacity: 0; transform: scale(0.9); transition: 0.3s; }
-        .word-card.animating { z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        /* Ghost Card for Animation */
+        .ghost-card {
+            position: absolute; z-index: 999;
+            background: var(--card-bg); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-weight: 500; font-size: 0.95em; color: white;
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
         
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
@@ -555,11 +506,8 @@
             }
 
             selectedWords = [];
-            
-            // Render
-            renderSolvedGroups(); // แยกออกมา
-            renderGrid();         // แยกออกมา
-            
+            renderSolvedGroups(); 
+            renderGrid();         
             showScreen('gameScreen');
 
             if (solvedGroups.length === 4) {
@@ -567,12 +515,10 @@
             } else {
                 document.getElementById('winCard').style.display = 'none';
                 document.getElementById('submitBtn').style.display = 'block';
-                document.getElementById('hintBtn').disabled = false;
-                updateHintBtnState();
+                updateUIState();
             }
         }
 
-        // --- แยกฟังก์ชัน Render (แก้บั๊กแถบเฉลยกระพริบ) ---
         function renderSolvedGroups() {
             const solvedContainer = document.getElementById('solvedGroups');
             solvedContainer.innerHTML = '';
@@ -603,7 +549,6 @@
                     tri.style.borderColor = `transparent ${gameData.groups[obj.groupIndex].color} transparent transparent`;
                     c.appendChild(tri);
                 }
-                
                 grid.appendChild(c);
             });
             updateUIState();
@@ -642,76 +587,115 @@
                 const group = gameData.groups[firstIdx];
                 gameHistory.push({ type: 'correct', color: group.color });
                 
-                const grid = document.getElementById('grid');
-                const allCards = Array.from(grid.children); // Get visual visual elements
+                // --- NEW ANIMATION LOGIC (GHOSTS) ---
                 
-                // 1. Identify Target Cards & Re-order selections to be handled
-                const orderedCards = [];
-                group.words.forEach(w => {
-                    const card = selectedWords.find(c => c.dataset.word === w);
-                    if(card) orderedCards.push(card);
+                // 1. Create Ghosts for Selected Cards
+                const ghosts = selectedWords.map(card => {
+                    const rect = card.getBoundingClientRect();
+                    const ghost = document.createElement('div');
+                    ghost.className = 'ghost-card';
+                    ghost.textContent = card.textContent;
+                    ghost.style.width = rect.width + 'px';
+                    ghost.style.height = rect.height + 'px';
+                    ghost.style.left = rect.left + 'px';
+                    ghost.style.top = rect.top + 'px';
+                    ghost.style.background = group.color;
+                    document.body.appendChild(ghost);
+                    return ghost;
                 });
 
-                // 2. Identify Target Slots (Visual Position of Slot 0, 1, 2, 3)
-                // We use the CURRENT bounding rects of the first 4 cards in the grid as "Targets"
-                const targetRects = [
-                    allCards[0].getBoundingClientRect(),
-                    allCards[1].getBoundingClientRect(),
-                    allCards[2].getBoundingClientRect(),
-                    allCards[3].getBoundingClientRect()
-                ];
+                // 2. Hide Selected Cards immediately (Placeholder)
+                selectedWords.forEach(c => c.style.opacity = '0');
 
-                // 3. Animate
-                orderedCards.forEach((card, index) => {
-                    const startRect = card.getBoundingClientRect();
-                    
-                    card.classList.remove('selected');
-                    card.classList.add('animating'); // z-index high
-                    card.style.background = group.color;
-                    card.style.color = 'white';
-                    card.style.transition = 'none'; 
-
-                    // Target Position
-                    const destRect = targetRects[index];
-                    const deltaX = destRect.left - startRect.left;
-                    const deltaY = destRect.top - startRect.top;
-                    
-                    // Force Reflow
-                    void card.offsetWidth;
-
-                    card.style.transition = 'transform 0.6s cubic-bezier(0.2, 0, 0, 1)';
-                    card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                });
+                // 3. Update State (Remove solved from grid data)
+                solvedGroups.push(firstIdx);
+                currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
                 
+                // 4. Reset Hint State if needed
                 if (currentHintGroup === firstIdx) {
-                    currentHintGroup = null;
-                    hintWordsShownCount = 0;
+                    currentHintGroup = null; hintWordsShownCount = 0;
                 }
 
-                // 4. Sequence
+                // 5. Get Old Positions of Remaining Cards
+                const grid = document.getElementById('grid');
+                const remainingCards = Array.from(grid.children).filter(c => !selectedWords.includes(c));
+                const oldPosMap = new Map();
+                remainingCards.forEach(c => oldPosMap.set(c.dataset.word, c.getBoundingClientRect()));
+
+                // 6. Render New Grid (Remaining words move to fill gaps)
+                renderGrid(); 
+
+                // 7. FLIP Animation for Remaining Cards
+                const newGridCards = Array.from(grid.children);
+                newGridCards.forEach(card => {
+                    const oldRect = oldPosMap.get(card.dataset.word);
+                    if(oldRect) {
+                        const newRect = card.getBoundingClientRect();
+                        const dx = oldRect.left - newRect.left;
+                        const dy = oldRect.top - newRect.top;
+                        
+                        card.style.transition = 'none';
+                        card.style.transform = `translate(${dx}px, ${dy}px)`;
+                        
+                        void card.offsetWidth; // Force Reflow
+                        
+                        requestAnimationFrame(() => {
+                            card.style.transition = 'transform 0.5s ease';
+                            card.style.transform = '';
+                        });
+                    }
+                });
+
+                // 8. Render Solved Group (Hidden initially)
+                renderSolvedGroups();
+                const newSolvedBar = document.querySelector('.solved-group:last-child');
+                newSolvedBar.style.opacity = '0'; // Hide first
+                const barRect = newSolvedBar.getBoundingClientRect();
+
+                // 9. Animate Ghosts to Solved Bar Position
+                // Calculate target positions (distribute 4 ghosts in the bar)
+                const gap = 10;
+                const totalWidth = barRect.width;
+                const cardW = ghosts[0].offsetWidth;
+                // Just animate them all to center of bar for simplicity, or spread them
+                // Let's spread them slightly to look like they merge
+                const startX = barRect.left + (totalWidth - (cardW * 4 + gap * 3)) / 2;
+                
+                ghosts.forEach((ghost, i) => {
+                    const targetX = startX + i * (cardW + gap);
+                    // Actually, let's just move them to the center of the bar and fade out
+                    // User asked: "Arrange words into one line, hold 0.5s"
+                    
+                    // Let's line them up horizontally at the bar's Y position
+                    const targetY = barRect.top;
+                    // We need to calculate precise X to center them row-wise
+                    // Simplified: Move to bar center
+                     ghost.style.transform = `translate(${barRect.left - parseFloat(ghost.style.left) + 20 + (i*90)}px, ${targetY - parseFloat(ghost.style.top)}px)`;
+                });
+
+                // 10. Sequence: Move -> Hold -> Fade Out -> Show Bar
                 setTimeout(() => {
-                    // Fade out
-                    orderedCards.forEach(c => c.classList.add('fade-out'));
+                    // Hold 0.5s is implied by the transition time (0.6s) + wait
+                    // After move finishes (0.6s), wait 0.5s
                     setTimeout(() => {
-                        // Logic Update
-                        solvedGroups.push(firstIdx);
-                        currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                        // Fade Ghosts
+                        ghosts.forEach(g => g.style.opacity = '0');
+                        // Show Bar
+                        newSolvedBar.style.transition = 'opacity 0.3s';
+                        newSolvedBar.style.opacity = '1';
                         
-                        // Reset Selection
-                        selectedWords = [];
-                        document.getElementById('submitBtn').disabled = true;
-                        
-                        // Render UI (Solved group appears, grid rearranges)
-                        renderSolvedGroups();
-                        renderGrid(); 
-                        saveProgress();
-                        
-                        if (solvedGroups.length === 4) {
-                            saveProgress('finished');
-                            setTimeout(showWinState, 500);
-                        }
-                    }, 300); // Wait for fade
-                }, 600); // Wait for move animation (0.6s)
+                        setTimeout(() => {
+                            ghosts.forEach(g => g.remove());
+                            selectedWords = [];
+                            
+                            saveProgress();
+                            if (solvedGroups.length === 4) {
+                                saveProgress('finished');
+                                setTimeout(showWinState, 500);
+                            }
+                        }, 300);
+                    }, 500); // Hold time
+                }, 10); // Start move immediately
 
             } else {
                 gameHistory.push({ type: 'wrong' });
@@ -746,6 +730,7 @@
                 return;
             }
 
+            // Fix: Re-query DOM to ensure we get fresh elements
             const targets = Array.from(document.querySelectorAll('.word-card')).filter(c => 
                 parseInt(c.dataset.group) === currentHintGroup && !c.querySelector('.hint-triangle')
             );
@@ -778,29 +763,25 @@
         }
 
         function shuffleWords() {
-            // 1. Reset Selection FIRST (Fixes Bug)
+            // Fix: Reset Selection to prevent ID mismatch
             selectedWords = [];
             document.getElementById('submitBtn').disabled = true;
 
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
             
-            // 2. Get Old Positions
             const oldPositions = cards.map(c => {
                 const r = c.getBoundingClientRect();
                 return { card: c, x: r.left, y: r.top };
             });
 
-            // 3. Shuffle Data
             for (let i = currentWords.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
-            // 4. Render Grid ONLY (Not solved groups)
             renderGrid();
             
-            // 5. Animate
             const newCards = Array.from(grid.children);
             requestAnimationFrame(() => {
                 newCards.forEach(newCard => {
