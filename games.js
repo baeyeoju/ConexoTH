@@ -8,7 +8,9 @@ const gamesDatabase = {
             { category: "การใช้เวลามาก", words: ["โอ้เอ้วิหารราย", "ตะบอย", "แชเชือน", "อืดอาด"], color: "#047857" },
             { category: "___เสียง", words: ["ระดับ", "น้ำ", "หาง", "กล่อง"], color: "#0e7490" },
             { category: "ทำนองร้อยกรองไทย", words: ["เสภา", "เห่เรือ", "สรภัญญะ", "พากย์โขน"], color: "#6d28d9" }
-        ]
+        ],
+        author: "baeyeoju",
+        editor: "baeyeoju"
     },
     "2026-02-04": {
         groups: [
