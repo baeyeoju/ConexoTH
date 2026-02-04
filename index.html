@@ -682,59 +682,136 @@
         }
 
         function checkAnswer() {
-            if (selectedWords.length !== 4) return;
-            guessCount++;
-            
-            const firstIdx = parseInt(selectedWords[0].dataset.group);
-            const isMatch = selectedWords.every(c => parseInt(c.dataset.group) === firstIdx);
+            const selectedCards = Array.from(document.querySelectorAll('.word-card.selected'));
+            const groupIndices = selectedCards.map(card => parseInt(card.dataset.groupIndex));
 
-            if (isMatch) {
-                const group = gameData.groups[firstIdx];
-                gameHistory.push({ type: 'correct', color: group.color });
-                
+            // ตรวจสอบว่าอยู่กลุ่มเดียวกันหมดไหม
+            const allSame = groupIndices.every(idx => idx === groupIndices[0]);
+
+            guessCount++;
+
+            if (allSame) {
+                // --- ตอบถูก ---
+                const groupIndex = groupIndices[0];
+                const group = gameData.groups[groupIndex];
+                gameHistory.push({ type: 'correct', groupIndex: groupIndex });
+
+                const solvedWords = group.words;
                 const grid = document.getElementById('grid');
-                selectedWords.forEach(c => grid.insertBefore(c, grid.firstChild));
+                const allCards = Array.from(grid.children);
                 
-                requestAnimationFrame(() => {
-                    selectedWords.forEach(c => {
-                        c.classList.remove('selected');
-                        c.style.backgroundColor = group.color;
-                        c.style.color = 'white';
-                    });
-                    setTimeout(() => {
-                        selectedWords.forEach(c => c.classList.add('fade-out'));
-                        setTimeout(() => {
-                            solvedGroups.push(firstIdx);
-                            currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
-                            selectedWords = [];
-                            document.getElementById('submitBtn').disabled = true;
-                            currentHintGroup = null;
-                            hintWordsShownCount = 0;
-                            document.getElementById('hintBtn').disabled = false;
-                            renderGameUI(); 
-                            saveProgress();
-                            if (solvedGroups.length === 4) {
-                                saveProgress('finished');
-                                setTimeout(showWinState, 500);
-                            }
-                        }, 300);
-                    }, 600);
+                // หาการ์ดที่ถูกต้อง 4 ใบ
+                const orderedCards = solvedWords.map(word => {
+                    return selectedCards.find(card => card.dataset.word === word);
+                }).filter(card => card !== undefined);
+
+                // คำนวณตำแหน่งแถวเป้าหมาย (หาช่องว่างแถวบนสุดที่เป็นไปได้)
+                // เพื่อความสวยงาม เราจะให้มันวิ่งไปหาตำแหน่งของการ์ดใบแรกที่ถูกเลือก
+                const selectedIndices = orderedCards.map(card => allCards.indexOf(card));
+                const minIndex = Math.min(...selectedIndices);
+                
+                // เริ่มอนิเมชั่น
+                orderedCards.forEach((card, index) => {
+                    // 1. ล็อกตำแหน่งปัจจุบันและเปลี่ยนสี
+                    const startRect = card.getBoundingClientRect();
+                    
+                    card.classList.remove('selected', 'hint');
+                    card.classList.add('animating'); // ใส่ class เพื่อให้ z-index สูงขึ้น
+                    card.style.background = group.color;
+                    card.style.color = 'white';
+                    card.style.transition = 'none'; // ปิด transition ก่อนคำนวณ
+                    
+                    // 2. คำนวณตำแหน่งเป้าหมาย (Target)
+                    // เป้าหมายคือตำแหน่งเรียงกัน 4 ใบ เริ่มจาก minIndex
+                    // แต่อันนี้คำนวณยาก ให้ใช้วิธี Relative ง่ายกว่า:
+                    // ให้มันวิ่งไปรวมกันที่ตำแหน่งของการ์ดใบซ้ายสุดที่ถูกเลือก (Visual grouping)
+                    
+                    const targetCardIndex = minIndex + index; // ตำแหน่งใน grid ที่เราอยากให้มันไปอยู่ชั่วคราว
+                    // แต่เนื่องจาก Grid อาจจะสลับที่กันอยู่ การคำนวณพิกัด X,Y เองจะชัวร์สุด
+                    
+                    const cardWidth = startRect.width;
+                    const cardHeight = startRect.height;
+                    const gap = 10; // ตรงกับ gap ใน css
+                    
+                    // คำนวณ Row/Col ของตำแหน่งปัจจุบัน
+                    const currentIndex = allCards.indexOf(card);
+                    const currentRow = Math.floor(currentIndex / 4);
+                    const currentCol = currentIndex % 4;
+                    
+                    // คำนวณ Row/Col ของเป้าหมาย (เรียงกัน 4 ใบ ในแถวของตัวแรกสุด)
+                    const targetRow = Math.floor(minIndex / 4);
+                    const targetCol = index; // เรียง 0,1,2,3 ถ้าอยากให้ขึ้นบรรทัดใหม่ต้องคำนวณเพิ่ม แต่นี่เอาแบบง่ายคือวิ่งไปเรียงกัน
+                    
+                    // ในที่นี้ เพื่อให้ง่ายที่สุด และเหมือน Conexo ต้นฉบับ
+                    // การ์ดจะวิ่งไปแทนที่ตำแหน่ง 4 ใบนั้นๆ
+                    // แต่ในโค้ดเดิมใช้ลอจิกสลับที่ DOM เลยอาจจะงง
+                    
+                    // **วิธีแก้ที่ง่ายที่สุด:**
+                    // ให้การ์ดวิ่งไปหาตำแหน่งของ "ตัวเอง" หลังจากเรียงแล้ว
+                    // แต่เนื่องจากเราจะลบมันออก เราแค่อยากให้มัน "วิ่งไปรวมกลุ่มกัน" ก่อนหายไป
+                    // ให้วิ่งไปหาตำแหน่งของ selectedIndices[index] ก็ได้ แต่มันจะดูไม่เรียง
+                    
+                    // เอาแบบเดิมของคุณแต่เพิ่ม Force Reflow:
+                    const destIndex = selectedIndices.sort((a,b)=>a-b)[index]; // ตำแหน่งที่เรียงลำดับแล้ว
+                    const destCard = allCards[destIndex];
+                    const destRect = destCard.getBoundingClientRect();
+                    
+                    const deltaX = destRect.left - startRect.left;
+                    const deltaY = destRect.top - startRect.top;
+                    
+                    // Force Reflow ก่อนสั่งวิ่ง
+                    void card.offsetWidth;
+                    
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.2, 0, 0, 1)';
+                    card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
                 });
+                
+                // ... (ส่วนจัดการการ์ดที่เหลือให้หลบทาง - ทำยากในเวลาสั้น แนะนำให้ใช้วิธี Fade Out ง่ายๆ) ...
+
+                if (currentHintGroup === groupIndex) {
+                    currentHintGroup = null;
+                    hintWordsShown = [];
+                }
+
+                // รออนิเมชั่นวิ่งเสร็จ (0.6s) แล้วค่อย Fade Out
+                setTimeout(() => {
+                    orderedCards.forEach(card => card.classList.add('fade-out'));
+                }, 600);
+
+                // รอ Fade Out เสร็จ (อีก 0.3s) แล้วค่อยอัปเดตข้อมูลจริง
+                setTimeout(() => {
+                    solvedGroups.push({
+                        category: group.category,
+                        words: solvedWords,
+                        groupIndex: groupIndex,
+                        color: group.color
+                    });
+                    
+                    // ล้างค่า Style
+                    allCards.forEach(card => {
+                        card.style.transform = '';
+                        card.style.transition = '';
+                        card.classList.remove('animating', 'fade-out');
+                    });
+                    
+                    renderSolvedGroups();
+                    renderGrid();
+                    checkWin();
+                }, 1000); // 600ms + 400ms buffer
 
             } else {
+                // --- ตอบผิด ---
                 gameHistory.push({ type: 'wrong' });
-                selectedWords.forEach(c => {
-                    c.classList.add('incorrect');
-                    setTimeout(() => c.classList.remove('incorrect'), 500);
+                selectedCards.forEach(card => {
+                    card.classList.add('incorrect');
+                    setTimeout(() => {
+                        card.classList.remove('incorrect', 'selected');
+                    }, 500);
                 });
-                setTimeout(() => {
-                    selectedWords.forEach(c => c.classList.remove('selected'));
-                    selectedWords = [];
-                    document.getElementById('submitBtn').disabled = true;
-                }, 600);
-                saveProgress('playing');
             }
-            document.getElementById('guessCount').textContent = guessCount;
+
+            selectedWords = [];
+            updateUI();
         }
 
         function useHint() {
@@ -776,9 +853,52 @@
         function shuffleWords() {
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
-            for (let i = cards.length; i >= 0; i--) {
-                grid.appendChild(grid.children[Math.random() * i | 0]);
+            
+            // 1. เก็บตำแหน่งเดิม (First)
+            const oldPositions = cards.map(card => {
+                const rect = card.getBoundingClientRect();
+                return { card, x: rect.left, y: rect.top };
+            });
+            
+            // 2. สุ่มลำดับข้อมูล (Data)
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
+            
+            // 3. Render grid ใหม่ (Last)
+            renderGrid();
+            
+            // 4. คำนวณและทำ Animation (Invert -> Play)
+            const newCards = Array.from(grid.children);
+            newCards.forEach((newCard) => {
+                const word = newCard.dataset.word;
+                const oldPos = oldPositions.find(p => p.card.dataset.word === word);
+                
+                if (oldPos) {
+                    const newRect = newCard.getBoundingClientRect();
+                    const deltaX = oldPos.x - newRect.left;
+                    const deltaY = oldPos.y - newRect.top;
+                    
+                    // ตั้งค่าเริ่มต้น: ย้ายกลับไปที่เดิมทันที (ไม่มี transition)
+                    newCard.style.transition = 'none';
+                    newCard.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                    
+                    // --- สำคัญ! บังคับให้ Browser วาดเฟรมแรกก่อน (Force Reflow) ---
+                    void newCard.offsetWidth; 
+                    
+                    // เริ่มอนิเมชั่น: ย้ายไปที่ 0,0 (ตำแหน่งใหม่)
+                    newCard.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+                    newCard.style.transform = ''; // ล้างค่า transform เพื่อให้กลับสู่ตำแหน่งปกติ
+                    
+                    // ล้างค่า transition เมื่อจบ
+                    setTimeout(() => {
+                        newCard.style.transition = '';
+                    }, 500);
+                }
+            });
+            
+            saveGame();
         }
 
         function saveProgress(status) {
