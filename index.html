@@ -17,8 +17,8 @@
             --text-muted: #94a3b8;
             --success-green: #22c55e;
             --progress-yellow: #eab308;
-            --card-height: 60px;
-            --gap-size: 6px;
+            --card-height: 70px; /* เพิ่มความสูงตามสัดส่วน */
+            --gap-size: 8px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,11 +31,13 @@
             color: var(--text-color);
             display: flex;
             justify-content: center;
-            font-size: 14px;
+            /* เพิ่มขนาดฟอนต์ 25% (จาก 14px -> 17.5px ปัดเป็น 18px) */
+            font-size: 18px; 
         }
 
         .container {
-            max-width: 450px;
+            /* เพิ่มความกว้าง 25% (จาก 450px -> 560px) */
+            max-width: 560px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -53,34 +55,53 @@
         }
 
         .logo-section { margin-bottom: 30px; text-align: center; }
-        .logo-icon { font-size: 3.5em; display: block; margin-bottom: 5px; }
-        .game-logo-text { font-size: 2.2em; font-weight: 800; letter-spacing: 1px; }
-        .game-subtitle { color: var(--text-muted); font-size: 1em; margin-top: 5px; }
+        /* ลบ logo-icon ออก */
+        .game-logo-text { font-size: 3em; font-weight: 800; letter-spacing: 2px; line-height: 1; }
+        .game-subtitle { color: var(--text-muted); font-size: 1.1em; margin-top: 10px; }
 
-        .daily-game-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 25px; }
+        .daily-game-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 30px; }
+        
         .daily-game-card {
-            background: #1e293b; border: 3px solid #334155; border-radius: 12px;
-            padding: 12px 20px; width: auto; min-width: 280px; 
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 20px; transition: transform 0.2s, border-color 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: #1e293b;
+            /* ขอบขาวจั๊วะ */
+            border: 3px solid #ffffff; 
+            border-radius: 16px;
+            padding: 15px 25px;
+            width: auto; 
+            min-width: 320px; 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            /* ไม่ต้องมี transition transform เพราะไม่ให้ลอย */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
-        .daily-game-card:hover { transform: translateY(-2px); border-color: var(--primary-blue); }
+        /* เอาเมาส์ชี้ ไม่ต้องลอย ไม่เปลี่ยนสีขอบ */
+        .daily-game-card:hover { transform: none; border-color: #ffffff; }
+
         .daily-text-group { display: flex; flex-direction: column; text-align: left; }
         .daily-label { font-size: 1.1em; font-weight: 700; color: white; }
-        .daily-date { font-size: 0.9em; color: var(--text-muted); margin-top: 2px; }
+        .daily-date { font-size: 0.9em; color: var(--text-muted); margin-top: 4px; }
 
         .play-btn-small {
-            background: var(--primary-blue); color: white; border: none;
-            padding: 8px 20px; border-radius: 8px; font-size: 1em; font-weight: 700; cursor: pointer;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.25s; /* เปลี่ยนสี 0.25s */
         }
+        .play-btn-small:hover { background: #0077c2; }
 
-        .menu-list { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .menu-list { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .menu-item {
             background: transparent; color: var(--text-muted); border: 1px solid transparent;
-            padding: 10px 20px; font-size: 1em; font-weight: 600; cursor: pointer;
+            padding: 12px 25px; font-size: 1em; font-weight: 600; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            border-radius: 10px; transition: all 0.2s; width: fit-content; min-width: 180px;
+            border-radius: 12px; transition: all 0.25s; width: fit-content; min-width: 200px;
         }
         .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
 
@@ -89,7 +110,7 @@
         .cal-nav-btn {
             background: #1e293b; border: none; color: white; font-size: 1em; cursor: pointer;
             padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
+            transition: background 0.25s;
         }
         .cal-nav-btn:hover:not(:disabled) { background: #334155; opacity: 1; }
         .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
@@ -97,17 +118,23 @@
         .cal-title {
             background: transparent; font-size: 1.1em; font-weight: 700; cursor: pointer;
             padding: 10px; border-radius: 8px; flex: 1; text-align: center;
-            display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+            display: flex; align-items: center; justify-content: center; transition: background 0.25s;
         }
         .cal-title:hover { background: #334155; }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 10px; }
-        .day-name { text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; font-weight: bold; }
+        /* ปรับปฏิทินให้ดูเล็กกว่า (ใช้ gap น้อยและ padding น้อย) แม้หน้าจอจะขยาย */
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 4px; /* Gap เล็ก */
+            padding: 0 20px; /* บีบข้างเข้า */
+        }
+        .day-name { text-align: center; color: #64748b; font-size: 0.75em; margin-bottom: 5px; font-weight: bold; }
         .day-cell {
             aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
             border-radius: 8px; font-weight: bold; position: relative;
             background: transparent; border: 1px solid transparent;
-            cursor: pointer; transition: all 0.2s; font-size: 0.85em;
+            cursor: pointer; transition: all 0.25s; font-size: 0.8em; /* ลดฟอนต์ในปุ่มวัน */
         }
         .day-cell.completed { background: var(--success-green); color: white; }
         .day-cell.in-progress { background: var(--progress-yellow); color: #0f172a; }
@@ -118,7 +145,7 @@
         .month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; padding: 0 10px; }
         .month-cell {
             background: transparent; border: 1px solid transparent; padding: 15px 5px;
-            border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: 0.2s;
+            border-radius: 8px; text-align: center; cursor: pointer; font-size: 0.9em; font-weight: 600; transition: 0.25s;
         }
         .month-cell:hover:not(.disabled) { background: var(--card-hover); color: white; }
         .month-cell.active { background: var(--primary-blue) !important; color: white; }
@@ -126,18 +153,18 @@
 
         /* --- 4. GAME SCREEN --- */
         .screen { display: none; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        .screen.active { display: block; animation: fadeIn 0.25s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .back-btn { background: transparent; color: white; border: none; font-size: 1.4em; cursor: pointer; padding: 5px; }
-        .screen-title { flex: 1; text-align: center; font-size: 1.4em; font-weight: bold; }
+        .game-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .back-btn { background: transparent; color: white; border: none; font-size: 1.5em; cursor: pointer; padding: 5px; }
+        .screen-title { flex: 1; text-align: center; font-size: 1.5em; font-weight: bold; }
 
         .stats-row { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            margin-bottom: 15px; 
+            margin-bottom: 20px; 
             color: white; 
             font-weight: 700; 
             font-size: 0.85em;
@@ -146,15 +173,15 @@
         .stats-val { font-weight: 400; margin: 0 2px; color: white; }
         .stats-spacer { display: inline-block; width: 6px; } 
 
-        .game-controls { display: flex; gap: 6px; }
+        .game-controls { display: flex; gap: 8px; }
         .btn-small {
             background: #334155; color: white; border: none;
-            padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em;
         }
         .btn-small:hover:not(:disabled) { background: #475569; }
         .btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; position: relative; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 25px; position: relative; }
         
         .word-card {
             background: var(--card-bg); border-radius: 8px; height: var(--card-height);
@@ -162,23 +189,34 @@
             text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
             user-select: none; padding: 2px;
             position: relative; 
-            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+            /* Transition 0.25s สำหรับทั่วไป */
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
         }
         .word-card:hover:not(.selected):not(.solved):not(.animating) { background: var(--card-hover); }
         .word-card.selected { background: var(--primary-blue); color: white; }
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
         .word-card.fade-out { opacity: 0; pointer-events: none; }
         
+        /* Ghost Card for Animation */
+        .ghost-card {
+            position: absolute; z-index: 999;
+            background: var(--card-bg); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; font-weight: 500; font-size: 0.95em; color: white;
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), opacity 0.25s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            pointer-events: none;
+        }
+        
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
         .btn-submit {
-            width: 100%; padding: 12px; border: 1px solid #334155; border-radius: 10px;
+            width: 100%; padding: 15px; border: 1px solid #334155; border-radius: 12px;
             font-size: 1.1em; font-weight: bold; cursor: pointer;
-            background: #1e293b; color: white; transition: 0.2s;
+            background: #1e293b; color: white; transition: 0.25s;
         }
         .btn-submit:hover:not(:disabled) { background: #334155; }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-        /* Style สำหรับปุ่มตอนจบเกม (จางลง แต่ยังเห็นอยู่) */
         .btn-submit.game-over { opacity: 0.5; cursor: default; background: #0f172a; border-color: #1e293b; }
 
         .hint-triangle {
@@ -187,24 +225,23 @@
         }
 
         .win-card-inline {
-            background: #151e32; border-radius: 16px; padding: 20px;
-            text-align: center; margin: 0 auto 20px auto; width: 95%; display: none;
+            background: #151e32; border-radius: 16px; padding: 25px;
+            text-align: center; margin: 0 auto 25px auto; width: 95%; display: none;
         }
-        .emoji-grid { font-size: 1.5em; letter-spacing: 3px; margin-bottom: 15px; }
+        .emoji-grid { font-size: 1.5em; letter-spacing: 3px; margin-bottom: 20px; }
         .share-btn {
             background: var(--primary-blue); color: white; border: none;
-            padding: 10px 25px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            padding: 12px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1em;
         }
 
         .solved-group {
-            background: #334155; margin-bottom: 6px; padding: 5px 10px; border-radius: 8px;
+            background: #334155; margin-bottom: 8px; padding: 5px 10px; border-radius: 8px;
             text-align: center; height: var(--card-height); display: flex; flex-direction: column; justify-content: center;
-            /* ไม่มี animation ที่ตัว class หลัก เพื่อไม่ให้ตัวเก่ากระพริบ */
         }
-        /* Class สำหรับ Animation เฉพาะตัวใหม่ */
-        .solved-group.new-reveal { animation: fadeIn 0.5s ease forwards; }
+        /* แก้ไข: Fade In เฉยๆ ไม่ Float */
+        .solved-group.new-reveal { animation: fadeOnly 0.25s ease forwards; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -213,7 +250,6 @@
         <div id="mainMenu" class="screen active">
             <div class="main-menu">
                 <div class="logo-section">
-                    <span class="logo-icon">🌭</span>
                     <div class="game-logo-text">CONEXOTH</div>
                     <div class="game-subtitle">จัดกลุ่มคำที่เกี่ยวข้องกัน</div>
                 </div>
@@ -223,7 +259,7 @@
                             <div class="daily-label">โจทย์วันนี้</div>
                             <div class="daily-date" id="dailyDateText">--/--/--</div>
                         </div>
-                        <button class="play-btn-small" onclick="startDailyGame()">Play</button>
+                        <button class="play-btn-small" onclick="startDailyGame()">เล่น</button>
                     </div>
                 </div>
                 <div class="menu-list">
@@ -501,15 +537,12 @@
 
             selectedWords = [];
             
-            // รีเซ็ตปุ่ม Submit
             const btnSubmit = document.getElementById('submitBtn');
             btnSubmit.classList.remove('game-over');
             btnSubmit.disabled = true;
 
-            // Initialize Grid
             const solvedContainer = document.getElementById('solvedGroups');
             solvedContainer.innerHTML = '';
-            // Render Initial Solved Groups
             solvedGroups.forEach(gIdx => {
                 const group = gameData.groups[gIdx];
                 appendSolvedGroup(group, false);
@@ -522,7 +555,7 @@
                 showWinState();
             } else {
                 document.getElementById('winCard').style.display = 'none';
-                btnSubmit.style.display = 'block'; // Ensure visible
+                btnSubmit.style.display = 'block'; 
                 updateUIState();
             }
         }
@@ -540,6 +573,10 @@
         function renderGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
+            
+            // ใช้ Set ตรวจสอบว่าคำไหนถูกเลือกไว้
+            const selectedSet = new Set(selectedWords.map(el => el.dataset.word));
+
             currentWords.forEach(obj => {
                 const c = document.createElement('div');
                 c.className = 'word-card';
@@ -548,6 +585,11 @@
                 c.dataset.group = obj.groupIndex;
                 c.onclick = () => selectCard(c);
                 
+                // คืนค่า Selection
+                if (selectedSet.has(obj.word)) {
+                    c.classList.add('selected');
+                }
+
                 if (hintedWords.includes(obj.word)) {
                     const tri = document.createElement('div');
                     tri.className = 'hint-triangle';
@@ -556,6 +598,9 @@
                 }
                 grid.appendChild(c);
             });
+            
+            // อัปเดต selectedWords ให้ชี้ไปยัง DOM ใหม่
+            selectedWords = Array.from(grid.querySelectorAll('.word-card.selected'));
             updateUIState();
         }
 
@@ -574,7 +619,7 @@
             if (card.classList.contains('fade-out') || card.classList.contains('animating')) return;
             if (card.classList.contains('selected')) {
                 card.classList.remove('selected');
-                selectedWords = selectedWords.filter(c => c !== card);
+                selectedWords = selectedWords.filter(c => c.dataset.word !== card.dataset.word);
             } else {
                 if (selectedWords.length < 4) {
                     card.classList.add('selected');
@@ -585,137 +630,146 @@
         }
 
         function checkAnswer() {
+            // 1. ตรวจสอบว่าเลือกครบ 4 ใบหรือไม่
             if (selectedWords.length !== 4) return;
-            guessCount++;
             
+            // เพิ่มจำนวนครั้งที่ทาย
+            guessCount++;
+            document.getElementById('guessCount').textContent = guessCount;
+            
+            // เช็คว่าการ์ดทั้งหมดอยู่ในกลุ่มเดียวกันหรือไม่
             const firstIdx = parseInt(selectedWords[0].dataset.group);
             const isMatch = selectedWords.every(c => parseInt(c.dataset.group) === firstIdx);
 
             if (isMatch) {
+                // --- กรณีตอบถูก ---
                 const group = gameData.groups[firstIdx];
                 gameHistory.push({ type: 'correct', color: group.color });
                 
+                // เก็บ State ปัจจุบันของ DOM (Grid)
                 const grid = document.getElementById('grid');
                 const allCards = Array.from(grid.children);
 
-                // 1. Identify Correct & Remaining Cards
-                const correctCards = [];
-                const remainingCards = [];
-                
-                // Identify based on DOM elements to keep visual state
-                // We need to sort correct cards to the front (indices 0,1,2,3) and remaining to back
-                // But visually they are scattered. 
-                // Target: Visual Positions 0, 1, 2, 3 in the grid.
-                
-                // Let's grab the actual DOM elements for "Correct" ones
+                // แยกการ์ดเป็น 2 กลุ่ม: กลุ่มที่ถูก (Correct) และกลุ่มที่เหลือ (Remaining)
+                const correctCardsDOM = [];
+                const remainingCardsDOM = [];
+
+                // หา DOM Element ของการ์ดที่ถูกเลือก
                 group.words.forEach(w => {
                     const c = allCards.find(card => card.dataset.word === w);
-                    if(c) correctCards.push(c);
+                    if(c) correctCardsDOM.push(c);
                 });
                 
-                // The rest are remaining
+                // หา DOM Element ของการ์ดที่เหลือ
                 allCards.forEach(c => {
-                    if (!correctCards.includes(c)) remainingCards.push(c);
+                    if (!correctCardsDOM.includes(c)) remainingCardsDOM.push(c);
                 });
 
-                // 2. Snapshot First Positions
+                // 1. บันทึกตำแหน่งเริ่มต้น (First) ของการ์ดทุกใบ
                 const firstRects = new Map();
                 allCards.forEach(c => firstRects.set(c, c.getBoundingClientRect()));
 
-                // 3. Re-order DOM: Corrects first, then Remaining
-                // This puts Corrects at indices 0-3 (Top Row), Remaining at 4-N (Flowing below)
+                // 2. ปรับโครงสร้าง DOM: ย้ายการ์ดที่ถูกไปไว้ 4 ช่องแรก, ที่เหลือตามมา
+                // (จะทำให้ Browser คำนวณ Layout ใหม่ว่าการ์ดควรอยู่ที่ไหน)
                 const fragment = document.createDocumentFragment();
-                correctCards.forEach(c => fragment.appendChild(c));
-                remainingCards.forEach(c => fragment.appendChild(c));
+                correctCardsDOM.forEach(c => fragment.appendChild(c));   // ถูก 4 ใบแรก
+                remainingCardsDOM.forEach(c => fragment.appendChild(c)); // ที่เหลือตามมา
                 grid.appendChild(fragment);
 
-                // 4. Snapshot Last Positions
+                // 3. บันทึกตำแหน่งปลายทาง (Last)
                 const lastRects = new Map();
-                allCards.forEach(c => lastRects.set(c, c.getBoundingClientRect()));
+                // ต้องดึง children ใหม่จาก grid เพราะลำดับเปลี่ยนแล้ว
+                Array.from(grid.children).forEach(c => lastRects.set(c, c.getBoundingClientRect()));
 
-                // 5. Invert (Apply Translate)
-                allCards.forEach(c => {
+                // 4. Invert: คำนวณผลต่างและสั่งย้ายกลับไปที่เดิมทันที (เพื่อเตรียมเล่น Animation)
+                Array.from(grid.children).forEach(c => {
                     const first = firstRects.get(c);
                     const last = lastRects.get(c);
-                    const dx = first.left - last.left;
-                    const dy = first.top - last.top;
                     
-                    c.style.transition = 'none';
-                    c.style.transform = `translate(${dx}px, ${dy}px)`;
-                    
-                    // Visual changes for correct cards
-                    if (correctCards.includes(c)) {
+                    if (first && last) {
+                        const dx = first.left - last.left;
+                        const dy = first.top - last.top;
+                        
+                        // ปิด Transition ก่อน
+                        c.style.transition = 'none';
+                        c.style.transform = `translate(${dx}px, ${dy}px)`;
+                    }
+
+                    // เปลี่ยนสีการ์ดที่ถูกให้เป็นสีกลุ่มทันที (และให้ลอยทับตัวอื่น)
+                    if (correctCardsDOM.includes(c)) {
                         c.classList.remove('selected');
                         c.style.backgroundColor = group.color;
                         c.style.color = 'white';
-                        c.style.zIndex = '10'; // Ensure on top during move
+                        c.style.zIndex = '100'; 
                     }
                 });
 
-                // 6. Play (Animate)
+                // 5. Play: สั่งให้วิ่งไปยังตำแหน่งใหม่ (0,0 relative)
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
-                        allCards.forEach(c => {
+                        Array.from(grid.children).forEach(c => {
+                            // ตั้งค่าความเร็วการวิ่ง (0.6s)
                             c.style.transition = 'transform 0.6s cubic-bezier(0.2, 0, 0, 1)';
-                            c.style.transform = '';
+                            c.style.transform = ''; // ปล่อยให้วิ่งไปหาตำแหน่งใหม่
                         });
                     });
                 });
 
-                // 7. Logic Update & Sequence
-                // Reset Hint State
+                // 6. จัดการ Logic หลังจากจบ Animation
+                
+                // รีเซ็ต Hint ถ้ากลุ่มที่ถูกคือกลุ่มที่ใบ้ค้างไว้
                 if (currentHintGroup === firstIdx) {
                     currentHintGroup = null; hintWordsShownCount = 0;
                 }
 
-                // Wait for Move (0.6s) + Hold (0.5s) = 1.1s total
+                // รอเวลา: วิ่ง (0.6s) + ค้าง (0.5s) = 1.1s
                 setTimeout(() => {
-                    // Fade Out Correct Cards
-                    correctCards.forEach(c => c.classList.add('fade-out'));
+                    // --- ขั้นตอนการหายไปและแสดงแถบเฉลย ---
 
-                    // Wait for Fade (0.3s)
-                    setTimeout(() => {
-                        // Logic Removal
-                        solvedGroups.push(firstIdx);
-                        currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
-                        selectedWords = [];
-                        
-                        // DOM Removal of Correct Cards
-                        correctCards.forEach(c => c.remove());
-                        
-                        // Add Solved Bar (with animation)
-                        appendSolvedGroup(group, true);
+                    // A. ลบการ์ดที่ถูกออกจาก DOM ทันที (หายวับ)
+                    correctCardsDOM.forEach(c => c.remove());
 
-                        // Grid is already correctly sorted for remaining cards, no re-render needed for position,
-                        // but good to ensure state consistency.
-                        // renderGrid(); // Optional, but since we manipulated DOM, it's safer to leave as is or re-render.
-                        // Since we just removed children, the remaining ones (remainingCards) shift to fill gaps automatically by CSS Grid.
-                        
-                        document.getElementById('submitBtn').disabled = true;
-                        
-                        saveProgress();
-                        
-                        if (solvedGroups.length === 4) {
-                            saveProgress('finished');
-                            setTimeout(showWinState, 500);
-                        }
-                    }, 300);
+                    // B. อัปเดตข้อมูล Logic
+                    solvedGroups.push(firstIdx);
+                    currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                    selectedWords = [];
+
+                    // C. เพิ่มแถบเฉลย (CSS .new-reveal จะทำ Fade In ให้เอง)
+                    appendSolvedGroup(group, true);
+
+                    // ปิดปุ่มกด
+                    document.getElementById('submitBtn').disabled = true;
+                    
+                    // บันทึกเกม
+                    saveProgress();
+                    
+                    // เช็คว่าชนะหรือยัง
+                    if (solvedGroups.length === 4) {
+                        saveProgress('finished');
+                        setTimeout(showWinState, 500);
+                    }
+
                 }, 1100);
 
             } else {
+                // --- กรณีตอบผิด ---
                 gameHistory.push({ type: 'wrong' });
+                
+                // สั่นการ์ดและเปลี่ยนสีแดง
                 selectedWords.forEach(c => {
                     c.classList.add('incorrect');
                     setTimeout(() => c.classList.remove('incorrect'), 500);
                 });
+
+                // รีเซ็ตการเลือก (แต่ไม่ย้ายที่)
                 setTimeout(() => {
                     selectedWords.forEach(c => c.classList.remove('selected'));
                     selectedWords = [];
                     document.getElementById('submitBtn').disabled = true;
                 }, 600);
+                
                 saveProgress('playing');
             }
-            document.getElementById('guessCount').textContent = guessCount;
         }
 
         function useHint() {
@@ -767,29 +821,33 @@
         }
 
         function shuffleWords() {
-            selectedWords = [];
-            document.getElementById('submitBtn').disabled = true;
-
+            // 1. Remember selection
+            const selectedValues = selectedWords.map(c => c.dataset.word);
+            
+            // 2. Old Positions
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
-            
             const oldPositions = cards.map(c => {
                 const r = c.getBoundingClientRect();
-                return { card: c, x: r.left, y: r.top };
+                return { word: c.dataset.word, x: r.left, y: r.top };
             });
 
+            // 3. Shuffle Data
             for (let i = currentWords.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
+            // 4. Render Grid (Pass selection logic inside)
             renderGrid();
             
+            // 5. Animate
             const newCards = Array.from(grid.children);
             requestAnimationFrame(() => {
                 newCards.forEach(newCard => {
                     const word = newCard.dataset.word;
-                    const oldPos = oldPositions.find(p => p.card.dataset.word === word);
+                    const oldPos = oldPositions.find(p => p.word === word);
+                    
                     if(oldPos) {
                         const newRect = newCard.getBoundingClientRect();
                         const dx = oldPos.x - newRect.left;
@@ -836,7 +894,6 @@
             document.getElementById('finalHint').textContent = hintUsedCount;
             document.getElementById('winCard').style.display = 'block';
             
-            // ทำให้ปุ่มส่งคำตอบจางลงและกดไม่ได้
             const btn = document.getElementById('submitBtn');
             btn.style.display = 'block';
             btn.disabled = true;
