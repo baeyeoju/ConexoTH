@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ConexoTH - Daily Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* --- 1. CORE STYLES --- */
@@ -62,7 +62,8 @@
         
         .daily-game-card {
             background: #1e293b;
-            border: 3px solid #ffffff; 
+            /* แก้ไข: ขอบบางลงเหลือ 1.5px */
+            border: 1.5px solid #ffffff; 
             border-radius: 16px;
             padding: 15px 25px;
             width: auto; 
@@ -101,33 +102,16 @@
         }
         .menu-item:hover { background: rgba(255,255,255,0.05); color: white; }
 
-        .social-row {
-            display: flex;
-            gap: 20px;
-            margin-top: 25px;
-        }
+        .social-row { display: flex; gap: 20px; margin-top: 25px; }
         .social-btn {
-            background: #1e293b;
-            color: white;
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.5em;
-            cursor: pointer;
-            transition: all 0.25s;
-            border: 1px solid #334155;
+            background: #1e293b; color: white; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5em; cursor: pointer; transition: all 0.25s; border: 1px solid #334155;
         }
         .social-btn:hover { background: #334155; transform: translateY(-3px); }
         .social-btn.discord { color: #5865F2; }
         
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            color: #475569;
-            font-size: 0.8em;
-            padding-top: 20px;
-            width: 100%;
-        }
+        .footer { margin-top: auto; text-align: center; color: #475569; font-size: 0.8em; padding-top: 20px; width: 100%; }
 
         /* --- 3. CALENDAR SYSTEM --- */
         .calendar-header { display: flex; align-items: stretch; padding: 5px 10px 15px 10px; gap: 5px; }
@@ -137,7 +121,7 @@
             transition: background 0.25s;
         }
         .cal-nav-btn:hover:not(:disabled) { background: #334155; opacity: 1; }
-        .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
+        .cal-nav-btn:disabled { opacity: 0.1; cursor: default; background: transparent; color: #64748b; }
 
         .cal-title {
             background: transparent; font-size: 1.1em; font-weight: 700; cursor: pointer;
@@ -226,12 +210,10 @@
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-submit.game-over { opacity: 0.5; cursor: default; background: #0f172a; border-color: #1e293b; }
 
-        /* Author Credit - ปรับปรุงใหม่ */
         .credit-text {
             text-align: center; color: #94a3b8; font-size: 0.9em;
-            margin-top: 20px; margin-bottom: 20px;
-            display: none; /* ซ่อนไว้ก่อน */
-            line-height: 1.6;
+            margin-top: 15px; margin-bottom: 20px;
+            display: none; line-height: 1.6;
         }
         .credit-text .credit-label { font-weight: 400; opacity: 0.8; margin-right: 5px; font-size: 0.95em; }
         .credit-text .credit-name { font-weight: 700; color: #e2e8f0; }
@@ -258,6 +240,52 @@
         .solved-group.new-reveal { animation: fadeOnly 0.5s ease forwards; }
 
         @keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- MODAL STYLES (New) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); /* ทึบ 50% */
+            z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: #0f172a; /* พื้นหลังมืด */
+            border: 1px solid #ffffff; /* ขอบขาว */
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%; max-width: 400px;
+            position: relative;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-close-btn {
+            position: absolute; top: -15px; right: -15px;
+            width: 35px; height: 35px;
+            background: #0f172a; border: 2px solid white; border-radius: 50%;
+            color: white; font-size: 1.2em; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-title { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; }
+        
+        /* How to Play Specifics */
+        .htp-section { margin-bottom: 20px; text-align: center; }
+        .htp-grid-example {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0;
+        }
+        .htp-card {
+            background: #1e293b; border-radius: 6px; padding: 10px 2px;
+            font-size: 0.8em; text-align: center;
+        }
+        .htp-block {
+            border-radius: 8px; padding: 10px; margin: 5px 0;
+            color: white; font-weight: bold; font-size: 0.9em;
+        }
+        .htp-icons span { font-size: 1.5em; letter-spacing: 5px; }
+
     </style>
 </head>
 <body>
@@ -285,11 +313,11 @@
                     <button class="menu-item" onclick="window.open('https://forms.gle/mD2Dp87W8zT9B7s6A', '_blank')">
                         <i class="fa-solid fa-pen-to-square"></i> เสนอโจทย์
                     </button>
-                    <button class="menu-item" onclick="showHowToPlay()">
+                    <button class="menu-item" onclick="openModal('howToPlayModal')">
                         <i class="fa-solid fa-book-open"></i> วิธีเล่น
                     </button>
-                    <button class="menu-item" onclick="alert('พัฒนาโดยครูผู้สอนภาษาไทยและคณิตศาสตร์\n(baeyeoju)')">
-                        <i class="fa-solid fa-circle-info"></i> About
+                    <button class="menu-item" onclick="openModal('aboutModal')">
+                        <i class="fa-solid fa-circle-info"></i> เกี่ยวกับ
                     </button>
                 </div>
 
@@ -373,6 +401,41 @@
         </div>
     </div>
 
+    <div id="howToPlayModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('howToPlayModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title">วิธีเล่น</div>
+            <div style="text-align: left; font-size: 0.95em; color: #e2e8f0;">
+                <p style="margin-bottom: 10px;">เลือกคำศัพท์ 4 คำที่เกี่ยวข้องกัน</p>
+                <div class="htp-grid-example">
+                    <div class="htp-card">หมู</div>
+                    <div class="htp-card">หมา</div>
+                    <div class="htp-card">กา</div>
+                    <div class="htp-card">ไก่</div>
+                </div>
+                <p style="margin: 15px 0 5px 0;">คำศัพท์อาจมีความเกี่ยวข้องในหลายมิติ</p>
+                <div class="htp-block" style="background:#c2410c;">กระ___<br><span style="font-weight:400; font-size:0.9em;">จก, ซัง, เทียม, เด้ง</span></div>
+                <div class="htp-block" style="background:#047857;">ลักษณนาม "คัน"<br><span style="font-weight:400; font-size:0.9em;">รถ, ช้อน, ธนู, ร่ม</span></div>
+                
+                <p style="margin: 20px 0 10px 0; text-align: center;">ใช้คำใบ้และตอบผิดให้น้อยที่สุด !</p>
+                <div class="htp-icons" style="text-align: center;">
+                    <span>🟧🟩❌💡🟦🟪</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="aboutModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" onclick="closeModal('aboutModal')"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-title">เกี่ยวกับ</div>
+            <div style="font-size: 0.95em; line-height: 1.6; color: #cbd5e1;">
+                <p style="margin-bottom: 15px;">ConexoTH ได้ไอเดียมาจากเว็บเกม conexo.ws สร้างโดย Daydash ซึ่งได้ต้นแบบมาจากเกมโชว์ Only Connect ในเกม The Connecting Wall</p>
+                <p>เราจึงพัฒนาเกมให้เป็นภาษาไทยเพื่อให้คนไทยสามารถเล่นได้อย่างสนุกสนาน</p>
+            </div>
+        </div>
+    </div>
+
     <script src="games.js"></script>
 
     <script>
@@ -418,20 +481,40 @@
             return Object.keys(gamesDatabase).some(key => key.startsWith(prefix));
         }
 
+        function hasGamesInYear(year) {
+            return Object.keys(gamesDatabase).some(key => key.startsWith(year + '-'));
+        }
+
         function init() {
             const todayStr = getTodayStr();
             document.getElementById('dailyDateText').textContent = formatDisplayDate(todayStr);
             currentViewDate = getThaiDate(); 
         }
 
-        function showHowToPlay() {
-            alert("กติกาการเล่น:\n\n1. จัดกลุ่มคำ 4 คำที่มีความเกี่ยวข้องกัน\n2. เลือกคำ 4 คำแล้วกด 'ตรวจคำตอบ'\n3. พยายามจัดให้ครบทั้ง 4 กลุ่มโดยผิดให้น้อยที่สุด!");
+        // --- MODAL FUNCTIONS ---
+        function openModal(id) {
+            document.getElementById(id).classList.add('show');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
         }
 
         function shareGameLink() {
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert("คัดลอกลิงก์เกมแล้ว ส่งให้เพื่อนเลย!");
-            });
+            const url = window.location.href;
+            const title = "มาเล่น ConexoTH กันเถอะ!";
+            const text = "เกมจัดกลุ่มคำภาษาไทย สนุกมาก! ลองเล่นดูสิ";
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: text,
+                    url: url
+                }).catch((error) => console.log('Error sharing', error));
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert("คัดลอกลิงก์เกมแล้ว ส่งให้เพื่อนเลย!");
+                });
+            }
         }
 
         function showScreen(screenId) {
@@ -483,8 +566,10 @@
                 document.getElementById('calTitleBtn').textContent = `${year}`;
                 document.getElementById('daysView').style.display = 'none';
                 document.getElementById('monthsView').style.display = 'block';
-                document.getElementById('prevBtn').disabled = false;
-                document.getElementById('nextBtn').disabled = false;
+                
+                // FIX: Check Year Navigation
+                document.getElementById('prevBtn').disabled = !hasGamesInYear(year - 1);
+                document.getElementById('nextBtn').disabled = !hasGamesInYear(year + 1);
 
                 const monthList = document.getElementById('monthList');
                 monthList.innerHTML = '';
@@ -552,25 +637,18 @@
             gameData = gamesDatabase[dateStr];
             document.getElementById('gameDateLabel').textContent = formatDisplayDate(dateStr);
 
-            // --- จัดการแสดงผลเครดิต ---
             const creditDiv = document.getElementById('gameCredit');
             let creditHtml = '';
-            
-            if (gameData.author) {
-                creditHtml += `<span class="credit-label">ไอเดีย:</span> <span class="credit-name">${gameData.author}</span>`;
-            }
+            if (gameData.author) creditHtml += `<span class="credit-label">ไอเดีย:</span> <span class="credit-name">${gameData.author}</span>`;
             if (gameData.editor) {
-                if (creditHtml) creditHtml += '<br>'; // ขึ้นบรรทัดใหม่ถ้ามีทั้งคู่
+                if (creditHtml) creditHtml += '<br>';
                 creditHtml += `<span class="credit-label">ปรับปรุง:</span> <span class="credit-name">${gameData.editor}</span>`;
             }
-            
             if (creditHtml) {
-                creditDiv.innerHTML = creditHtml;
-                creditDiv.style.display = 'block';
+                creditDiv.innerHTML = creditHtml; creditDiv.style.display = 'block';
             } else {
                 creditDiv.style.display = 'none';
             }
-            // ---------------------------
 
             const saved = userProgress[dateStr];
             if (saved) {
@@ -821,10 +899,8 @@
             );
 
             if (targets.length > 0) {
-                // Logic: เปิด 2 คำในครั้งแรก, 1 คำในครั้งต่อไป
                 let countToReveal = (hintWordsShownCount === 0) ? 2 : 1;
                 
-                // สุ่มเปิด
                 for(let i=0; i<countToReveal; i++) {
                     if(targets.length === 0) break;
                     const randIdx = Math.floor(Math.random() * targets.length);
@@ -939,11 +1015,20 @@
 
         function shareStats() {
             const text = `ConexoTH ${formatDisplayDate(currentGameDateStr)}\nทาย: ${guessCount} | คำใบ้: ${hintUsedCount}\n${document.getElementById('winHistory').textContent}`;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = document.getElementById('shareBtn');
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
-                setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> แชร์', 2000);
-            });
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'ConexoTH',
+                    text: text,
+                    url: window.location.href
+                }).catch((error) => console.log('Error sharing', error));
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('shareBtn');
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
+                    setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> แชร์', 2000);
+                });
+            }
         }
 
         init();
