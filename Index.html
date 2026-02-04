@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corndogzo - Daily Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-color: #ffffff;
+            --primary-blue: #009afe;
+            --primary-hover: #0080d6;
+            --success-green: #22c55e;
+            --warning-yellow: #eab308;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* จำกัดความกว้างให้เหมือนแอปมือถือ */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Main Menu --- */
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 20px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .game-title {
+            font-size: 2.5em;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .game-desc {
+            color: #94a3b8;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .daily-card {
+            background: transparent;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .daily-info h3 { font-size: 1.2em; font-weight: bold; }
+        .daily-info p { color: #94a3b8; font-size: 1.1em; margin-top: 5px; }
+
+        .play-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .play-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+
+        .menu-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: transparent;
+            color: #e2e8f0;
+            border: none;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background 0.3s;
+            text-decoration: none;
+        }
+        .menu-item:hover { background: rgba(255,255,255,0.05); }
+        .menu-item i { width: 25px; text-align: center; }
+
+        /* --- Calendar Screen --- */
+        .screen { display: none; width: 100%; }
+        .screen.active { display: block; }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        .back-btn {
+            background: none; border: none; color: white;
+            font-size: 1.5em; cursor: pointer; padding: 10px;
+        }
+        .header-title { flex: 1; text-align: center; font-size: 1.5em; font-weight: bold; }
+
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        .month-nav-btn {
+            background: none; border: none; color: white;
+            font-size: 1.2em; cursor: pointer;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .day-name {
+            text-align: center; color: #64748b; font-size: 0.9em; margin-bottom: 10px;
+        }
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            cursor: pointer;
+            position: relative;
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        /* Status Colors */
+        .day-cell.no-game { color: #334155; cursor: default; } /* จางๆ ไม่มีเกม */
+        .day-cell.available { background: transparent; border: 2px solid #334155; } /* มีเกม ยังไม่เล่น */
+        .day-cell.completed { background: var(--success-green); border: none; } /* จบแล้ว */
+        .day-cell.in-progress { background: var(--warning-yellow); color: #000; border: none; } /* ยังไม่จบ */
+        .day-cell.today { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(0,154,254,0.3); }
+
+        /* --- Game Screen (เอาของเดิมมาปรับ) --- */
+        .game-header { display: flex; align-items: center; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+        .word-card {
+            background: var(--card-bg); height: 70px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 500; cursor: pointer; text-align: center; padding: 5px;
+            transition: all 0.2s; user-select: none;
+        }
+        .word-card.selected { background: var(--primary-blue); color: white; transform: translateY(-3px); }
+        .word-card.solved { opacity: 0; pointer-events: none; } /* ซ่อนเมื่อตอบถูกแล้ว เดี๋ยวไปโผล่ใน solved-groups */
+        .word-card.incorrect { animation: shake 0.4s; background: #ef4444; }
+        
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+        .solved-group {
+            border-radius: 10px; padding: 15px; margin-bottom: 10px; text-align: center;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+        
+        .buttons-row { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .action-btn {
+            padding: 12px 20px; border-radius: 25px; border: 2px solid #334155;
+            background: transparent; color: white; cursor: pointer; font-weight: bold;
+        }
+        .action-btn:hover:not(:disabled) { background: #334155; }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .submit-btn { background: #e2e8f0; color: #0f172a; border: none; }
+        .submit-btn:hover:not(:disabled) { background: white; }
+
+        /* Win Modal */
+        .win-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.9); z-index: 100;
+            display: none; justify-content: center; align-items: center;
+        }
+        .win-card {
+            background: var(--card-bg); padding: 30px; border-radius: 20px;
+            text-align: center; max-width: 90%; width: 400px;
+        }
+        .win-emoji { font-size: 4em; margin-bottom: 20px; }
+
+        /* Creator Tool (Admin) */
+        .creator-tool { display: none; padding: 20px; background: #1e293b; position: absolute; top:0; left:0; width:100%; min-height:100vh; z-index: 999; }
+        .creator-tool input { width: 100%; padding: 10px; margin-bottom: 10px; background: #0f172a; border: 1px solid #334155; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="mainMenu" class="main-menu screen active">
+            <div class="logo-section">
+                <span class="logo-icon">🌭</span>
+                <h1 class="game-title">CORNDOGZO</h1>
+                <p class="game-desc">Make 4 groups of 4 words that<br>have something in common</p>
+            </div>
+
+            <div class="daily-card">
+                <div class="daily-info">
+                    <h3>Daily game</h3>
+                    <p id="todayDateDisplay">--/--/----</p>
+                </div>
+                <button class="play-btn" onclick="startDailyGame()">Play</button>
+            </div>
+
+            <div class="menu-list">
+                <button class="menu-item" onclick="showCalendar()">
+                    <i class="fa-regular fa-calendar"></i> Previous games
+                </button>
+                <button class="menu-item" onclick="window.open('https://forms.gle/YOUR_FORM_LINK', '_blank')">
+                    <i class="fa-regular fa-comment"></i> เสนอโจทย์
+                </button>
+                <button class="menu-item" onclick="alert('สร้างโดย ครูผู้สอนภาษาไทยและคณิตศาสตร์ ผู้ชื่นชอบ Coding!')">
+                    <i class="fa-solid fa-circle-info"></i> About
+                </button>
+                <button class="menu-item" style="opacity: 0.3; font-size: 0.8em;" onclick="toggleCreator()">
+                    <i class="fa-solid fa-tools"></i> Admin Tool
+                </button>
+            </div>
+        </div>
+
+        <div id="calendarScreen" class="screen">
+            <div class="header-nav">
+                <button class="back-btn" onclick="showScreen('mainMenu')"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="header-title">Previous games</div>
+                <div style="width: 40px;"></div> </div>
+
+            <div class="calendar-controls">
+                <button class="month-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 id="calendarMonthYear">February 2026</h2>
+                <button class="month-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="day-name">Sun</div><div class="day-name">Mon</div><div class="day-name">Tue</div>
+                <div class="day-name">Wed</div><div class="day-name">Thu</div><div class="day-name">Fri</div>
+                <div class="day-name">Sat</div>
+            </div>
+            <div id="calendarDays" class="calendar-grid" style="margin-top: 10px;">
+                </div>
+        </div>
+
+        <div id="gameScreen" class="screen">
+            <div class="header-nav">
+                <button class="back-btn" onclick="showScreen('mainMenu')"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="header-title">Corndogzo <span id="gameDateTitle" style="font-size: 0.6em; opacity: 0.7; display: block;"></span></div>
+                <div style="width: 40px;"></div>
+            </div>
+            
+            <div id="solvedContainer"></div>
+            <div id="gameGrid" class="grid"></div>
+            
+            <div class="buttons-row">
+                <button class="action-btn" onclick="shuffleGrid()">Shuffle</button>
+                <button class="action-btn submit-btn" id="submitBtn" onclick="submitGuess()" disabled>Submit</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px; color: #64748b;">
+                Mistakes remaining: <span id="livesDisplay">●●●●</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="resultOverlay" class="win-overlay">
+        <div class="win-card">
+            <div class="win-emoji" id="resultEmoji">🎉</div>
+            <h2 id="resultTitle">Great Job!</h2>
+            <p id="resultDesc" style="margin: 15px 0; color: #94a3b8;">Next daily game in: <span id="countdown">--:--:--</span></p>
+            <button class="play-btn" onclick="showScreen('calendarScreen'); document.getElementById('resultOverlay').style.display='none'">See History</button>
+        </div>
+    </div>
+
+    <div id="creatorTool" class="creator-tool">
+        <h2>Create New Game JSON</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">กรอกข้อมูลแล้วกด Generate เพื่อได้โค้ดไปแปะในตัวแปร database</p>
+        
+        <div id="creatorInputs"></div>
+        
+        <button class="play-btn" onclick="generateJson()">Generate JSON to Console</button>
+        <button class="action-btn" onclick="toggleCreator()">Close</button>
+    </div>
+
+    <script>
+        // --- 1. DATABASE (ส่วนนี้คือส่วนที่คุณต้องมาแก้เพื่อเพิ่มโจทย์) ---
+        // รูปแบบ: 'YYYY-MM-DD': { groups: [...] }
+        const gamesDatabase = {
+            "2026-02-04": {
+                groups: [
+                    { category: "ผลไม้สีแดง", words: ["แอปเปิ้ล", "เชอร์รี่", "สตรอว์เบอร์รี่", "แตงโม"], color: "#ef4444" },
+                    { category: "สัตว์เลี้ยง", words: ["แมว", "สุนัข", "แฮมสเตอร์", "กระต่าย"], color: "#eab308" },
+                    { category: "เครื่องเขียน", words: ["ดินสอ", "ปากกา", "ยางลบ", "ไม้บรรทัด"], color: "#22c55e" },
+                    { category: "ดาวเคราะห์", words: ["โลก", "อังคาร", "พฤหัส", "ศุกร์"], color: "#3b82f6" }
+                ]
+            },
+            "2026-02-03": {
+                groups: [
+                    { category: "Example Group 1", words: ["A1", "A2", "A3", "A4"], color: "#ef4444" },
+                    { category: "Example Group 2", words: ["B1", "B2", "B3", "B4"], color: "#eab308" },
+                    { category: "Example Group 3", words: ["C1", "C2", "C3", "C4"], color: "#22c55e" },
+                    { category: "Example Group 4", words: ["D1", "D2", "D3", "D4"], color: "#3b82f6" }
+                ]
+            }
+        };
+
+        // --- 2. STATE MANAGEMENT ---
+        let currentViewDate = new Date();
+        let playingDate = null;
+        let selectedWords = [];
+        let mistakes = 0;
+        let gameFinished = false;
+        
+        // Load progress from LocalStorage
+        let userProgress = JSON.parse(localStorage.getItem('corndogzo_progress')) || {};
+        // Structure: { "2026-02-04": { status: "completed" | "in_progress", solvedIndices: [0,2], mistakes: 1 } }
+
+        function getTodayString() {
+            const d = new Date();
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // --- 3. UI FUNCTIONS ---
+        
+        function init() {
+            const today = getTodayString();
+            document.getElementById('todayDateDisplay').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+            renderCalendar(currentViewDate);
+            
+            // Generate Input fields for Creator Tool
+            const creatorDiv = document.getElementById('creatorInputs');
+            for(let i=1; i<=4; i++) {
+                creatorDiv.innerHTML += `
+                    <div style="background:#0f172a; padding:10px; margin-bottom:10px;">
+                        <h4>Group ${i}</h4>
+                        <input type="text" placeholder="Category Name" id="c_cat_${i}">
+                        <input type="text" placeholder="Word 1, Word 2, Word 3, Word 4" id="c_words_${i}">
+                        <input type="color" value="#ef4444" id="c_color_${i}" style="height:30px;">
+                    </div>
+                `;
+            }
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            if(screenId === 'calendarScreen') renderCalendar(currentViewDate);
+        }
+
+        function startDailyGame() {
+            loadGame(getTodayString());
+        }
+
+        function toggleCreator() {
+            const tool = document.getElementById('creatorTool');
+            tool.style.display = tool.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // --- 4. CALENDAR LOGIC ---
+
+        function changeMonth(delta) {
+            currentViewDate.setMonth(currentViewDate.getMonth() + delta);
+            renderCalendar(currentViewDate);
+        }
+
+        function renderCalendar(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
+            document.getElementById('calendarMonthYear').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const todayStr = getTodayString();
+            
+            const container = document.getElementById('calendarDays');
+            container.innerHTML = '';
+
+            // Blank slots for previous month
+            for (let i = 0; i < firstDay; i++) {
+                container.appendChild(document.createElement('div'));
+            }
+
+            // Days
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayStr = String(i).padStart(2, '0');
+                const monthStr = String(month + 1).padStart(2, '0');
+                const dateKey = `${year}-${monthStr}-${dayStr}`;
+                
+                const cell = document.createElement('div');
+                cell.className = 'day-cell';
+                cell.textContent = i;
+
+                if (dateKey === todayStr) cell.classList.add('today');
+
+                const hasGame = gamesDatabase[dateKey];
+                const progress = userProgress[dateKey];
+
+                if (!hasGame) {
+                    cell.classList.add('no-game');
+                } else {
+                    if (progress && progress.status === 'completed') {
+                        cell.classList.add('completed');
+                    } else if (progress && progress.status === 'in_progress') {
+                        cell.classList.add('in_progress');
+                    } else {
+                        cell.classList.add('available');
+                    }
+                    cell.onclick = () => loadGame(dateKey);
+                }
+                
+                container.appendChild(cell);
+            }
+        }
+
+        // --- 5. GAME LOGIC ---
+        let currentWordsObj = []; // { word: "X", groupIndex: 0, solved: false }
+        let currentGroups = [];
+
+        function loadGame(dateKey) {
+            if (!gamesDatabase[dateKey]) {
+                alert("ยังไม่มีเกมสำหรับวันนี้");
+                return;
+            }
+
+            playingDate = dateKey;
+            currentGroups = gamesDatabase[dateKey].groups;
+            
+            // Check saved progress
+            const progress = userProgress[dateKey] || { status: 'not_started', solvedIndices: [], mistakes: 0 };
+            mistakes = progress.mistakes || 0;
+            
+            // Setup words
+            currentWordsObj = [];
+            currentGroups.forEach((group, gIndex) => {
+                // ถ้ากลุ่มนี้ตอบถูกไปแล้ว ไม่ต้องใส่ลงใน grid
+                if (progress.solvedIndices.includes(gIndex)) return;
+                
+                group.words.forEach(word => {
+                    currentWordsObj.push({ word: word, groupIndex: gIndex });
+                });
+            });
+
+            // Shuffle
+            currentWordsObj.sort(() => Math.random() - 0.5);
+
+            // Render
+            document.getElementById('gameDateTitle').textContent = dateKey;
+            renderGameBoard(progress.solvedIndices);
+            showScreen('gameScreen');
+        }
+
+        function renderGameBoard(solvedIndices = []) {
+            const grid = document.getElementById('gameGrid');
+            const solvedContainer = document.getElementById('solvedContainer');
+            
+            grid.innerHTML = '';
+            solvedContainer.innerHTML = '';
+
+            // Render Solved Groups
+            solvedIndices.forEach(idx => {
+                const group = currentGroups[idx];
+                const div = document.createElement('div');
+                div.className = 'solved-group';
+                div.style.backgroundColor = group.color;
+                div.innerHTML = `<h3>${group.category}</h3><p>${group.words.join(', ')}</p>`;
+                solvedContainer.appendChild(div);
+            });
+
+            // Render Available Words
+            currentWordsObj.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'word-card';
+                card.textContent = item.word;
+                card.dataset.index = index;
+                card.onclick = () => selectCard(card, item);
+                grid.appendChild(card);
+            });
+            
+            updateLives();
+            
+            if (currentWordsObj.length === 0) {
+                gameComplete();
+            }
+        }
+
+        function selectCard(card, item) {
+            if (card.classList.contains('selected')) {
+                card.classList.remove('selected');
+                selectedWords = selectedWords.filter(w => w.cardIndex !== card.dataset.index);
+            } else {
+                if (selectedWords.length < 4) {
+                    card.classList.add('selected');
+                    selectedWords.push({ word: item.word, groupIndex: item.groupIndex, cardIndex: card.dataset.index });
+                }
+            }
+            
+            document.getElementById('submitBtn').disabled = selectedWords.length !== 4;
+        }
+
+        function submitGuess() {
+            if (selectedWords.length !== 4) return;
+
+            const firstGroup = selectedWords[0].groupIndex;
+            const isCorrect = selectedWords.every(w => w.groupIndex === firstGroup);
+
+            if (isCorrect) {
+                // Save Progress
+                if (!userProgress[playingDate]) userProgress[playingDate] = { status: 'in_progress', solvedIndices: [], mistakes: 0 };
+                userProgress[playingDate].solvedIndices.push(firstGroup);
+                userProgress[playingDate].status = 'in_progress';
+                saveProgress();
+
+                // Animation & Remove words
+                const indicesToRemove = selectedWords.map(w => w.word);
+                currentWordsObj = currentWordsObj.filter(w => !indicesToRemove.includes(w.word));
+                
+                selectedWords = [];
+                renderGameBoard(userProgress[playingDate].solvedIndices);
+            } else {
+                // Wrong
+                mistakes++;
+                const isOneAway = checkOneAway();
+                
+                document.querySelectorAll('.word-card.selected').forEach(c => {
+                    c.classList.add('incorrect');
+                    setTimeout(() => c.classList.remove('incorrect'), 500);
+                });
+                
+                if(isOneAway) {
+                    const btn = document.getElementById('submitBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = "One away!";
+                    setTimeout(() => btn.textContent = originalText, 1000);
+                }
+
+                if (!userProgress[playingDate]) userProgress[playingDate] = { status: 'in_progress', solvedIndices: [], mistakes: 0 };
+                userProgress[playingDate].mistakes = mistakes;
+                saveProgress();
+                updateLives();
+            }
+            
+            document.getElementById('submitBtn').disabled = true;
+            document.querySelectorAll('.word-card.selected').forEach(c => c.classList.remove('selected'));
+            selectedWords = [];
+        }
+
+        function checkOneAway() {
+            const counts = {};
+            selectedWords.forEach(w => {
+                counts[w.groupIndex] = (counts[w.groupIndex] || 0) + 1;
+            });
+            return Object.values(counts).includes(3);
+        }
+
+        function updateLives() {
+            const maxLives = 4;
+            let dots = "";
+            for(let i=0; i<maxLives-mistakes; i++) dots += "●";
+            document.getElementById('livesDisplay').textContent = dots || "Sudden Death!";
+        }
+
+        function shuffleGrid() {
+            currentWordsObj.sort(() => Math.random() - 0.5);
+            renderGameBoard(userProgress[playingDate]?.solvedIndices || []);
+            selectedWords = [];
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        function gameComplete() {
+            userProgress[playingDate].status = 'completed';
+            saveProgress();
+            document.getElementById('resultEmoji').textContent = '🎉';
+            document.getElementById('resultTitle').textContent = 'Perfect!';
+            document.getElementById('resultOverlay').style.display = 'flex';
+        }
+
+        function saveProgress() {
+            localStorage.setItem('corndogzo_progress', JSON.stringify(userProgress));
+        }
+
+        // --- 6. ADMIN / GENERATOR ---
+        function generateJson() {
+            const groups = [];
+            for(let i=1; i<=4; i++) {
+                const cat = document.getElementById(`c_cat_${i}`).value;
+                const wordsStr = document.getElementById(`c_words_${i}`).value;
+                const color = document.getElementById(`c_color_${i}`).value;
+                
+                if(cat && wordsStr) {
+                    groups.push({
+                        category: cat,
+                        words: wordsStr.split(',').map(s => s.trim()),
+                        color: color
+                    });
+                }
+            }
+            
+            const dateKey = prompt("Enter Date (YYYY-MM-DD):", getTodayString());
+            const jsonOutput = `"${dateKey}": { "groups": ${JSON.stringify(groups)} },`;
+            console.log("--- COPY BELOW THIS LINE ---");
+            console.log(jsonOutput);
+            alert("JSON generated in Console (F12) -> Console tab\nCopy it and paste into 'gamesDatabase' variable.");
+        }
+
+        // Run
+        init();
+
+    </script>
+</body>
+</html>
