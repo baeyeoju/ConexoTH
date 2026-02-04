@@ -133,7 +133,6 @@
         .back-btn { background: transparent; color: white; border: none; font-size: 1.4em; cursor: pointer; padding: 5px; }
         .screen-title { flex: 1; text-align: center; font-size: 1.4em; font-weight: bold; }
 
-        /* Stats Row - ปรับลดระยะห่างตามสั่ง */
         .stats-row { 
             display: flex; 
             justify-content: space-between; 
@@ -141,11 +140,10 @@
             margin-bottom: 15px; 
             color: white; 
             font-weight: 700; 
-            font-size: 0.85em; /* ลดขนาดฟอนต์ลงเล็กน้อยเพื่อมือถือ */
-            white-space: nowrap; /* ห้ามตัดบรรทัด */
+            font-size: 0.85em;
+            white-space: nowrap;
         }
         .stats-val { font-weight: 400; margin: 0 2px; color: white; }
-        /* ลดระยะห่าง spacer */
         .stats-spacer { display: inline-block; width: 6px; } 
 
         .game-controls { display: flex; gap: 6px; }
@@ -164,22 +162,12 @@
             text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
             user-select: none; padding: 2px;
             position: relative; 
-            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease;
         }
         .word-card:hover:not(.selected):not(.solved):not(.animating) { background: var(--card-hover); }
         .word-card.selected { background: var(--primary-blue); color: white; }
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
-        .word-card.fade-out { opacity: 0; transform: scale(0.9); transition: 0.3s; }
-        /* Ghost Card for Animation */
-        .ghost-card {
-            position: absolute; z-index: 999;
-            background: var(--card-bg); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; font-weight: 500; font-size: 0.95em; color: white;
-            transition: transform 0.6s cubic-bezier(0.2, 0, 0, 1), opacity 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            pointer-events: none;
-        }
+        .word-card.fade-out { opacity: 0; pointer-events: none; }
         
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
@@ -190,6 +178,8 @@
         }
         .btn-submit:hover:not(:disabled) { background: #334155; }
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Style สำหรับปุ่มตอนจบเกม (จางลง แต่ยังเห็นอยู่) */
+        .btn-submit.game-over { opacity: 0.5; cursor: default; background: #0f172a; border-color: #1e293b; }
 
         .hint-triangle {
             position: absolute; top: 0; right: 0; width: 0; height: 0;
@@ -209,8 +199,12 @@
         .solved-group {
             background: #334155; margin-bottom: 6px; padding: 5px 10px; border-radius: 8px;
             text-align: center; height: var(--card-height); display: flex; flex-direction: column; justify-content: center;
-            animation: fadeIn 0.5s;
+            /* ไม่มี animation ที่ตัว class หลัก เพื่อไม่ให้ตัวเก่ากระพริบ */
         }
+        /* Class สำหรับ Animation เฉพาะตัวใหม่ */
+        .solved-group.new-reveal { animation: fadeIn 0.5s ease forwards; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -506,7 +500,21 @@
             }
 
             selectedWords = [];
-            renderSolvedGroups(); 
+            
+            // รีเซ็ตปุ่ม Submit
+            const btnSubmit = document.getElementById('submitBtn');
+            btnSubmit.classList.remove('game-over');
+            btnSubmit.disabled = true;
+
+            // Initialize Grid
+            const solvedContainer = document.getElementById('solvedGroups');
+            solvedContainer.innerHTML = '';
+            // Render Initial Solved Groups
+            solvedGroups.forEach(gIdx => {
+                const group = gameData.groups[gIdx];
+                appendSolvedGroup(group, false);
+            });
+
             renderGrid();         
             showScreen('gameScreen');
 
@@ -514,22 +522,19 @@
                 showWinState();
             } else {
                 document.getElementById('winCard').style.display = 'none';
-                document.getElementById('submitBtn').style.display = 'block';
+                btnSubmit.style.display = 'block'; // Ensure visible
                 updateUIState();
             }
         }
 
-        function renderSolvedGroups() {
+        function appendSolvedGroup(group, animate) {
             const solvedContainer = document.getElementById('solvedGroups');
-            solvedContainer.innerHTML = '';
-            solvedGroups.forEach(gIdx => {
-                const group = gameData.groups[gIdx];
-                const d = document.createElement('div');
-                d.className = 'solved-group';
-                d.style.backgroundColor = group.color;
-                d.innerHTML = `<h3 style="color:white; margin:0; font-size:1em;">${group.category}</h3><p style="color:white; opacity:0.9; margin:2px 0 0 0; font-size:0.9em;">${group.words.join(', ')}</p>`;
-                solvedContainer.appendChild(d);
-            });
+            const d = document.createElement('div');
+            d.className = 'solved-group';
+            if (animate) d.classList.add('new-reveal');
+            d.style.backgroundColor = group.color;
+            d.innerHTML = `<h3 style="color:white; margin:0; font-size:1em;">${group.category}</h3><p style="color:white; opacity:0.9; margin:2px 0 0 0; font-size:0.9em;">${group.words.join(', ')}</p>`;
+            solvedContainer.appendChild(d);
         }
 
         function renderGrid() {
@@ -557,7 +562,10 @@
         function updateUIState() {
             document.getElementById('guessCount').textContent = guessCount;
             document.getElementById('hintCount').textContent = hintUsedCount;
-            document.getElementById('submitBtn').disabled = selectedWords.length !== 4;
+            const submitBtn = document.getElementById('submitBtn');
+            if (solvedGroups.length !== 4) {
+                submitBtn.disabled = selectedWords.length !== 4;
+            }
             document.getElementById('shuffleBtn').disabled = solvedGroups.length === 4;
             updateHintBtnState();
         }
@@ -587,115 +595,112 @@
                 const group = gameData.groups[firstIdx];
                 gameHistory.push({ type: 'correct', color: group.color });
                 
-                // --- NEW ANIMATION LOGIC (GHOSTS) ---
+                const grid = document.getElementById('grid');
+                const allCards = Array.from(grid.children);
+
+                // 1. Identify Correct & Remaining Cards
+                const correctCards = [];
+                const remainingCards = [];
                 
-                // 1. Create Ghosts for Selected Cards
-                const ghosts = selectedWords.map(card => {
-                    const rect = card.getBoundingClientRect();
-                    const ghost = document.createElement('div');
-                    ghost.className = 'ghost-card';
-                    ghost.textContent = card.textContent;
-                    ghost.style.width = rect.width + 'px';
-                    ghost.style.height = rect.height + 'px';
-                    ghost.style.left = rect.left + 'px';
-                    ghost.style.top = rect.top + 'px';
-                    ghost.style.background = group.color;
-                    document.body.appendChild(ghost);
-                    return ghost;
+                // Identify based on DOM elements to keep visual state
+                // We need to sort correct cards to the front (indices 0,1,2,3) and remaining to back
+                // But visually they are scattered. 
+                // Target: Visual Positions 0, 1, 2, 3 in the grid.
+                
+                // Let's grab the actual DOM elements for "Correct" ones
+                group.words.forEach(w => {
+                    const c = allCards.find(card => card.dataset.word === w);
+                    if(c) correctCards.push(c);
+                });
+                
+                // The rest are remaining
+                allCards.forEach(c => {
+                    if (!correctCards.includes(c)) remainingCards.push(c);
                 });
 
-                // 2. Hide Selected Cards immediately (Placeholder)
-                selectedWords.forEach(c => c.style.opacity = '0');
+                // 2. Snapshot First Positions
+                const firstRects = new Map();
+                allCards.forEach(c => firstRects.set(c, c.getBoundingClientRect()));
 
-                // 3. Update State (Remove solved from grid data)
-                solvedGroups.push(firstIdx);
-                currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
-                
-                // 4. Reset Hint State if needed
+                // 3. Re-order DOM: Corrects first, then Remaining
+                // This puts Corrects at indices 0-3 (Top Row), Remaining at 4-N (Flowing below)
+                const fragment = document.createDocumentFragment();
+                correctCards.forEach(c => fragment.appendChild(c));
+                remainingCards.forEach(c => fragment.appendChild(c));
+                grid.appendChild(fragment);
+
+                // 4. Snapshot Last Positions
+                const lastRects = new Map();
+                allCards.forEach(c => lastRects.set(c, c.getBoundingClientRect()));
+
+                // 5. Invert (Apply Translate)
+                allCards.forEach(c => {
+                    const first = firstRects.get(c);
+                    const last = lastRects.get(c);
+                    const dx = first.left - last.left;
+                    const dy = first.top - last.top;
+                    
+                    c.style.transition = 'none';
+                    c.style.transform = `translate(${dx}px, ${dy}px)`;
+                    
+                    // Visual changes for correct cards
+                    if (correctCards.includes(c)) {
+                        c.classList.remove('selected');
+                        c.style.backgroundColor = group.color;
+                        c.style.color = 'white';
+                        c.style.zIndex = '10'; // Ensure on top during move
+                    }
+                });
+
+                // 6. Play (Animate)
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        allCards.forEach(c => {
+                            c.style.transition = 'transform 0.6s cubic-bezier(0.2, 0, 0, 1)';
+                            c.style.transform = '';
+                        });
+                    });
+                });
+
+                // 7. Logic Update & Sequence
+                // Reset Hint State
                 if (currentHintGroup === firstIdx) {
                     currentHintGroup = null; hintWordsShownCount = 0;
                 }
 
-                // 5. Get Old Positions of Remaining Cards
-                const grid = document.getElementById('grid');
-                const remainingCards = Array.from(grid.children).filter(c => !selectedWords.includes(c));
-                const oldPosMap = new Map();
-                remainingCards.forEach(c => oldPosMap.set(c.dataset.word, c.getBoundingClientRect()));
-
-                // 6. Render New Grid (Remaining words move to fill gaps)
-                renderGrid(); 
-
-                // 7. FLIP Animation for Remaining Cards
-                const newGridCards = Array.from(grid.children);
-                newGridCards.forEach(card => {
-                    const oldRect = oldPosMap.get(card.dataset.word);
-                    if(oldRect) {
-                        const newRect = card.getBoundingClientRect();
-                        const dx = oldRect.left - newRect.left;
-                        const dy = oldRect.top - newRect.top;
-                        
-                        card.style.transition = 'none';
-                        card.style.transform = `translate(${dx}px, ${dy}px)`;
-                        
-                        void card.offsetWidth; // Force Reflow
-                        
-                        requestAnimationFrame(() => {
-                            card.style.transition = 'transform 0.5s ease';
-                            card.style.transform = '';
-                        });
-                    }
-                });
-
-                // 8. Render Solved Group (Hidden initially)
-                renderSolvedGroups();
-                const newSolvedBar = document.querySelector('.solved-group:last-child');
-                newSolvedBar.style.opacity = '0'; // Hide first
-                const barRect = newSolvedBar.getBoundingClientRect();
-
-                // 9. Animate Ghosts to Solved Bar Position
-                // Calculate target positions (distribute 4 ghosts in the bar)
-                const gap = 10;
-                const totalWidth = barRect.width;
-                const cardW = ghosts[0].offsetWidth;
-                // Just animate them all to center of bar for simplicity, or spread them
-                // Let's spread them slightly to look like they merge
-                const startX = barRect.left + (totalWidth - (cardW * 4 + gap * 3)) / 2;
-                
-                ghosts.forEach((ghost, i) => {
-                    const targetX = startX + i * (cardW + gap);
-                    // Actually, let's just move them to the center of the bar and fade out
-                    // User asked: "Arrange words into one line, hold 0.5s"
-                    
-                    // Let's line them up horizontally at the bar's Y position
-                    const targetY = barRect.top;
-                    // We need to calculate precise X to center them row-wise
-                    // Simplified: Move to bar center
-                     ghost.style.transform = `translate(${barRect.left - parseFloat(ghost.style.left) + 20 + (i*90)}px, ${targetY - parseFloat(ghost.style.top)}px)`;
-                });
-
-                // 10. Sequence: Move -> Hold -> Fade Out -> Show Bar
+                // Wait for Move (0.6s) + Hold (0.5s) = 1.1s total
                 setTimeout(() => {
-                    // Hold 0.5s is implied by the transition time (0.6s) + wait
-                    // After move finishes (0.6s), wait 0.5s
+                    // Fade Out Correct Cards
+                    correctCards.forEach(c => c.classList.add('fade-out'));
+
+                    // Wait for Fade (0.3s)
                     setTimeout(() => {
-                        // Fade Ghosts
-                        ghosts.forEach(g => g.style.opacity = '0');
-                        // Show Bar
-                        newSolvedBar.style.transition = 'opacity 0.3s';
-                        newSolvedBar.style.opacity = '1';
+                        // Logic Removal
+                        solvedGroups.push(firstIdx);
+                        currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                        selectedWords = [];
                         
-                        setTimeout(() => {
-                            ghosts.forEach(g => g.remove());
-                            selectedWords = [];
-                            
-                            saveProgress();
-                            if (solvedGroups.length === 4) {
-                                saveProgress('finished');
-                                setTimeout(showWinState, 500);
-                            }
-                        }, 300);
-                    }, 500); // Hold time
-                }, 10); // Start move immediately
+                        // DOM Removal of Correct Cards
+                        correctCards.forEach(c => c.remove());
+                        
+                        // Add Solved Bar (with animation)
+                        appendSolvedGroup(group, true);
+
+                        // Grid is already correctly sorted for remaining cards, no re-render needed for position,
+                        // but good to ensure state consistency.
+                        // renderGrid(); // Optional, but since we manipulated DOM, it's safer to leave as is or re-render.
+                        // Since we just removed children, the remaining ones (remainingCards) shift to fill gaps automatically by CSS Grid.
+                        
+                        document.getElementById('submitBtn').disabled = true;
+                        
+                        saveProgress();
+                        
+                        if (solvedGroups.length === 4) {
+                            saveProgress('finished');
+                            setTimeout(showWinState, 500);
+                        }
+                    }, 300);
+                }, 1100);
 
             } else {
                 gameHistory.push({ type: 'wrong' });
@@ -730,7 +735,6 @@
                 return;
             }
 
-            // Fix: Re-query DOM to ensure we get fresh elements
             const targets = Array.from(document.querySelectorAll('.word-card')).filter(c => 
                 parseInt(c.dataset.group) === currentHintGroup && !c.querySelector('.hint-triangle')
             );
@@ -763,7 +767,6 @@
         }
 
         function shuffleWords() {
-            // Fix: Reset Selection to prevent ID mismatch
             selectedWords = [];
             document.getElementById('submitBtn').disabled = true;
 
@@ -832,7 +835,12 @@
             document.getElementById('finalGuess').textContent = guessCount;
             document.getElementById('finalHint').textContent = hintUsedCount;
             document.getElementById('winCard').style.display = 'block';
-            document.getElementById('submitBtn').style.display = 'none';
+            
+            // ทำให้ปุ่มส่งคำตอบจางลงและกดไม่ได้
+            const btn = document.getElementById('submitBtn');
+            btn.style.display = 'block';
+            btn.disabled = true;
+            btn.classList.add('game-over');
         }
 
         function shareStats() {
