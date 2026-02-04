@@ -214,14 +214,14 @@
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-submit.game-over { opacity: 0.5; cursor: default; background: #0f172a; border-color: #1e293b; }
 
-        /* Author Credit */
+        /* Author Credit - แก้ไขสีขาวจั๊วะ (เอา Opacity ออก) */
         .credit-text {
             text-align: center; color: white; font-size: 0.9em;
             margin-top: 20px; margin-bottom: 20px;
             display: none; line-height: 1.6;
         }
-        .credit-text .credit-label { font-weight: 400; opacity: 0.8; margin-right: 5px; font-size: 0.95em; color: white; }
-        .credit-text .credit-name { font-weight: 700; color: white; }
+        .credit-text .credit-label { font-weight: 400; opacity: 1; margin-right: 5px; font-size: 0.95em; color: #ffffff; }
+        .credit-text .credit-name { font-weight: 700; color: #ffffff; }
 
         .hint-triangle {
             position: absolute; top: 0; right: 0; width: 0; height: 0;
@@ -276,19 +276,27 @@
         }
         .modal-title { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; }
         
-        /* How to Play */
+        /* How to Play Specifics */
         .htp-section { margin-bottom: 20px; text-align: center; }
         .htp-grid-example {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0;
         }
+        
+        /* การ์ดในวิธีเล่น */
         .htp-card {
             background: #1e293b; border-radius: 6px; padding: 10px 2px;
-            font-size: 0.8em; text-align: center;
+            font-size: 0.8em; text-align: center; border: 1px solid transparent;
         }
+        /* เพิ่ม Class สำหรับการ์ดที่ถูกเลือก (สีฟ้า) */
+        .htp-card.selected {
+            background: var(--primary-blue);
+            color: white;
+        }
+
         .htp-block {
             border-radius: 8px; padding: 10px; margin: 5px 0;
             color: white; font-weight: bold; font-size: 0.9em;
-            text-align: center; /* จัดกลาง */
+            text-align: center;
         }
         .htp-icons span { font-size: 1.5em; letter-spacing: 5px; }
 
@@ -414,10 +422,14 @@
             <div style="text-align: left; font-size: 0.95em; color: #e2e8f0;">
                 <p style="margin-bottom: 10px;">เลือกคำศัพท์ 4 คำที่เกี่ยวข้องกัน</p>
                 <div class="htp-grid-example">
-                    <div class="htp-card">หมู</div>
-                    <div class="htp-card">หมา</div>
-                    <div class="htp-card">กา</div>
-                    <div class="htp-card">ไก่</div>
+                    <div class="htp-card selected">หมู</div>
+                    <div class="htp-card">หนึ่ง</div>
+                    <div class="htp-card selected">กา</div>
+                    <div class="htp-card selected">ไก่</div>
+                    <div class="htp-card">สี่</div>
+                    <div class="htp-card selected">หมา</div>
+                    <div class="htp-card">สอง</div>
+                    <div class="htp-card">สาม</div>
                 </div>
                 <p style="margin: 15px 0 5px 0;">คำศัพท์อาจมีความเกี่ยวข้องในหลายมิติ</p>
                 <div class="htp-block" style="background:#c2410c;">กระ___<br><span style="font-weight:400; font-size:0.9em;">จก, ซัง, เทียม, เด้ง</span></div>
@@ -1019,14 +1031,7 @@
         }
 
         function shareStats() {
-            const url = "https://conexo-th.vercel.app/"; // ลิงก์เว็บของคุณ
-            const dateStr = formatDisplayDate(currentGameDateStr);
-            const historyStr = document.getElementById('winHistory').textContent;
-            const guess = guessCount;
-            const hint = hintUsedCount;
-
-            const text = `ConexoTH ${dateStr}\nทาย: ${guess} | คำใบ้: ${hint}\n${historyStr}\nเล่น ConexoTH: ${url}`;
-
+            const text = `ConexoTH ${formatDisplayDate(currentGameDateStr)}\nทาย: ${guessCount} | คำใบ้: ${hintUsedCount}\n${document.getElementById('winHistory').textContent}\nเล่น ConexoTH: https://conexo-th.vercel.app/`;
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('shareBtn');
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
