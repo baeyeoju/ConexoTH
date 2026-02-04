@@ -17,7 +17,7 @@
             --text-muted: #94a3b8;
             --success-green: #22c55e;
             --progress-yellow: #eab308;
-            --card-height: 60px;
+            --card-height: 70px;
             --gap-size: 6px;
         }
 
@@ -31,12 +31,11 @@
             color: var(--text-color);
             display: flex;
             justify-content: center;
-            /* ลดขนาดฟอนต์ลงเล็กน้อย (จาก 18px -> 16px) */
             font-size: 16px; 
         }
 
         .container {
-            max-width: 500px; /* ปรับความกว้างให้เหมาะสมกับฟอนต์ใหม่ */
+            max-width: 500px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -102,8 +101,10 @@
 
         /* --- 3. CALENDAR SYSTEM --- */
         .calendar-header { display: flex; align-items: stretch; padding: 5px 10px 15px 10px; gap: 5px; }
+        
         .cal-nav-btn {
-            background: #1e293b; border: none; color: white; font-size: 1em; cursor: pointer;
+            background: transparent; /* แก้ไข: โปร่งใส */
+            border: none; color: white; font-size: 1em; cursor: pointer;
             padding: 10px 15px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
             transition: background 0.25s;
         }
@@ -120,16 +121,13 @@
         .calendar-grid { 
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
-            gap: 2px; /* ลดช่องว่างระหว่าง column */
+            gap: 2px; 
             padding: 0 10px; 
         }
         .day-name { text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; font-weight: bold; }
         
-        /* ปรับปุ่มวันที่ให้เล็กลงและคงที่ */
         .day-cell {
-            width: 40px;  /* กำหนดขนาดตายตัว */
-            height: 40px; /* กำหนดขนาดตายตัว */
-            margin: 2px auto; /* จัดกึ่งกลางในช่อง Grid */
+            width: 40px; height: 40px; margin: 2px auto;
             display: flex; align-items: center; justify-content: center;
             border-radius: 10px; 
             font-weight: bold; position: relative;
@@ -302,7 +300,7 @@
 
         <div id="gameScreen" class="screen">
             <div class="game-header">
-                <button class="back-btn" onclick="backToCalendarOrMenu()">✕</button>
+                <button class="back-btn" onclick="backToCalendarOrMenu()"><i class="fa-solid fa-arrow-left"></i></button>
                 <div class="screen-title">ConexoTH</div>
                 <div style="width: 30px;"></div>
             </div>
@@ -407,7 +405,7 @@
         function backToCalendarOrMenu() {
             if (fromScreen === 'calendarScreen') {
                 showScreen('calendarScreen');
-                renderCalendar();
+                renderCalendar(); // Re-render to update status
             } else {
                 showScreen('mainMenu');
             }
@@ -483,8 +481,13 @@
                     else {
                         const prog = userProgress[dStr];
                         if (prog) {
-                            if (prog.status === 'finished') el.classList.add('completed');
-                            else if (prog.status === 'playing' && (prog.guessCount > 0 || prog.hintUsedCount > 0)) el.classList.add('in-progress');
+                            // --- FIX LOGIC: Check solvedGroups length for reliability ---
+                            if (prog.status === 'finished' || (prog.solvedGroups && prog.solvedGroups.length === 4)) {
+                                el.classList.add('completed');
+                            }
+                            else if (prog.status === 'playing' && (prog.guessCount > 0 || prog.hintUsedCount > 0)) {
+                                el.classList.add('in-progress');
+                            }
                             else el.classList.add('available'); 
                         } else el.classList.add('available'); 
                         el.onclick = () => loadGame(dStr);
@@ -754,14 +757,25 @@
             );
 
             if (targets.length > 0) {
-                const card = targets[Math.floor(Math.random() * targets.length)];
-                const tri = document.createElement('div');
-                tri.className = 'hint-triangle';
-                tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
-                card.appendChild(tri);
+                // Logic: เปิด 2 คำในครั้งแรก, 1 คำในครั้งต่อไป
+                let countToReveal = (hintWordsShownCount === 0) ? 2 : 1;
+                
+                // สุ่มเปิด
+                for(let i=0; i<countToReveal; i++) {
+                    if(targets.length === 0) break;
+                    const randIdx = Math.floor(Math.random() * targets.length);
+                    const card = targets[randIdx];
+                    targets.splice(randIdx, 1); // เอาออกจาก list ชั่วคราว
 
-                hintedWords.push(card.dataset.word);
-                hintWordsShownCount++;
+                    const tri = document.createElement('div');
+                    tri.className = 'hint-triangle';
+                    tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
+                    card.appendChild(tri);
+
+                    hintedWords.push(card.dataset.word);
+                    hintWordsShownCount++;
+                }
+
                 hintUsedCount++;
                 gameHistory.push({ type: 'hint' });
                 
@@ -781,10 +795,8 @@
         }
 
         function shuffleWords() {
-            // 1. Remember selection
             const selectedValues = selectedWords.map(c => c.dataset.word);
             
-            // 2. Old Positions
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
             const oldPositions = cards.map(c => {
@@ -792,16 +804,13 @@
                 return { word: c.dataset.word, x: r.left, y: r.top };
             });
 
-            // 3. Shuffle Data
             for (let i = currentWords.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
-            // 4. Render Grid (Pass selection logic inside)
             renderGrid();
             
-            // 5. Animate
             const newCards = Array.from(grid.children);
             requestAnimationFrame(() => {
                 newCards.forEach(newCard => {
@@ -825,7 +834,6 @@
                     }
                 });
                 
-                // Fix: ล้าง transition เพื่อให้ CSS class ทำงานต่อได้ (แก้เรื่องเลือกคำแล้วไม่ Fade)
                 setTimeout(() => {
                     newCards.forEach(c => c.style.transition = '');
                 }, 500);
