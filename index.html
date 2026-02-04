@@ -148,7 +148,7 @@
         .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
 
         .cal-title {
-            background: transparent; /* แก้ไข: โปร่งใสตามสั่ง */
+            background: transparent;
             font-size: 1.1em; font-weight: 700; cursor: pointer;
             padding: 10px; border-radius: 8px; 
             flex: 1;
@@ -156,7 +156,7 @@
             display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
         }
-        .cal-title:hover { background: #334155; } /* จ่อแล้วทึบ */
+        .cal-title:hover { background: #334155; }
 
         .calendar-grid { 
             display: grid; 
@@ -214,22 +214,20 @@
         .btn-small:hover:not(:disabled) { background: #475569; }
         .btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; position: relative; }
         
         .word-card {
             background: var(--card-bg); border-radius: 8px; height: var(--card-height);
             display: flex; align-items: center; justify-content: center;
             text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
             user-select: none; padding: 2px;
-            /* แก้ไข: เพิ่ม position relative เพื่อให้คำใบ้อยู่ในกรอบ และ transition */
             position: relative; 
             transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
-        .word-card:hover:not(.selected):not(.solved) { background: var(--card-hover); }
+        .word-card:hover:not(.selected):not(.solved):not(.animating) { background: var(--card-hover); }
         .word-card.selected { background: var(--primary-blue); color: white; }
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
         .word-card.fade-out { opacity: 0; transform: scale(0.9); transition: 0.3s; }
-        /* Class สำหรับตอนบิน */
         .word-card.animating { z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
@@ -380,7 +378,7 @@
         let gameHistory = [];
         let currentHintGroup = null;
         let hintWordsShownCount = 0;
-        let hintedWords = []; // เก็บคำที่ถูกใบ้แล้ว
+        let hintedWords = [];
         let fromScreen = 'mainMenu';
 
         const STORAGE_KEY = 'conexo_th_progress';
@@ -534,7 +532,6 @@
                 hintUsedCount = saved.hintUsedCount || 0;
                 solvedGroups = saved.solvedGroups || [];
                 gameHistory = saved.gameHistory || [];
-                // Load Hint State
                 currentHintGroup = saved.currentHintGroup !== undefined ? saved.currentHintGroup : null;
                 hintWordsShownCount = saved.hintWordsShownCount || 0;
                 hintedWords = saved.hintedWords || [];
@@ -558,7 +555,11 @@
             }
 
             selectedWords = [];
-            renderGameUI();
+            
+            // Render
+            renderSolvedGroups(); // แยกออกมา
+            renderGrid();         // แยกออกมา
+            
             showScreen('gameScreen');
 
             if (solvedGroups.length === 4) {
@@ -571,12 +572,8 @@
             }
         }
 
-        function renderGameUI() {
-            document.getElementById('guessCount').textContent = guessCount;
-            document.getElementById('hintCount').textContent = hintUsedCount;
-            document.getElementById('submitBtn').disabled = true;
-            document.getElementById('shuffleBtn').disabled = solvedGroups.length === 4;
-            
+        // --- แยกฟังก์ชัน Render (แก้บั๊กแถบเฉลยกระพริบ) ---
+        function renderSolvedGroups() {
             const solvedContainer = document.getElementById('solvedGroups');
             solvedContainer.innerHTML = '';
             solvedGroups.forEach(gIdx => {
@@ -587,7 +584,9 @@
                 d.innerHTML = `<h3 style="color:white; margin:0; font-size:1em;">${group.category}</h3><p style="color:white; opacity:0.9; margin:2px 0 0 0; font-size:0.9em;">${group.words.join(', ')}</p>`;
                 solvedContainer.appendChild(d);
             });
+        }
 
+        function renderGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
             currentWords.forEach(obj => {
@@ -598,7 +597,6 @@
                 c.dataset.group = obj.groupIndex;
                 c.onclick = () => selectCard(c);
                 
-                // ตรวจสอบว่าคำนี้ถูกใบ้ไปแล้วหรือยัง
                 if (hintedWords.includes(obj.word)) {
                     const tri = document.createElement('div');
                     tri.className = 'hint-triangle';
@@ -608,6 +606,14 @@
                 
                 grid.appendChild(c);
             });
+            updateUIState();
+        }
+
+        function updateUIState() {
+            document.getElementById('guessCount').textContent = guessCount;
+            document.getElementById('hintCount').textContent = hintUsedCount;
+            document.getElementById('submitBtn').disabled = selectedWords.length !== 4;
+            document.getElementById('shuffleBtn').disabled = solvedGroups.length === 4;
             updateHintBtnState();
         }
 
@@ -637,31 +643,36 @@
                 gameHistory.push({ type: 'correct', color: group.color });
                 
                 const grid = document.getElementById('grid');
-                const allCards = Array.from(grid.children);
+                const allCards = Array.from(grid.children); // Get visual visual elements
                 
-                // --- FIX: Animation Logic ---
+                // 1. Identify Target Cards & Re-order selections to be handled
                 const orderedCards = [];
                 group.words.forEach(w => {
                     const card = selectedWords.find(c => c.dataset.word === w);
                     if(card) orderedCards.push(card);
                 });
 
-                const selectedIndices = orderedCards.map(c => allCards.indexOf(c));
-                const minIndex = Math.min(...selectedIndices);
+                // 2. Identify Target Slots (Visual Position of Slot 0, 1, 2, 3)
+                // We use the CURRENT bounding rects of the first 4 cards in the grid as "Targets"
+                const targetRects = [
+                    allCards[0].getBoundingClientRect(),
+                    allCards[1].getBoundingClientRect(),
+                    allCards[2].getBoundingClientRect(),
+                    allCards[3].getBoundingClientRect()
+                ];
 
+                // 3. Animate
                 orderedCards.forEach((card, index) => {
                     const startRect = card.getBoundingClientRect();
+                    
                     card.classList.remove('selected');
-                    card.classList.add('animating');
+                    card.classList.add('animating'); // z-index high
                     card.style.background = group.color;
                     card.style.color = 'white';
-                    card.style.transition = 'none'; // ปิด transition ชั่วคราว
+                    card.style.transition = 'none'; 
 
-                    // คำนวณตำแหน่งปลายทาง (ให้วิ่งไปรวมกันที่การ์ดใบแรกของกลุ่ม)
-                    const destIndex = selectedIndices.sort((a,b)=>a-b)[index];
-                    const destCard = allCards[destIndex];
-                    const destRect = destCard.getBoundingClientRect();
-
+                    // Target Position
+                    const destRect = targetRects[index];
                     const deltaX = destRect.left - startRect.left;
                     const deltaY = destRect.top - startRect.top;
                     
@@ -672,29 +683,35 @@
                     card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
                 });
                 
-                // Reset Hint State if this group was the hint group
                 if (currentHintGroup === firstIdx) {
                     currentHintGroup = null;
                     hintWordsShownCount = 0;
-                    // ไม่ต้องลบ hintedWords เพราะคำพวกนั้นจะหายไปจากกระดานแล้ว
                 }
 
+                // 4. Sequence
                 setTimeout(() => {
+                    // Fade out
                     orderedCards.forEach(c => c.classList.add('fade-out'));
                     setTimeout(() => {
+                        // Logic Update
                         solvedGroups.push(firstIdx);
                         currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                        
+                        // Reset Selection
                         selectedWords = [];
                         document.getElementById('submitBtn').disabled = true;
                         
-                        renderGameUI(); 
+                        // Render UI (Solved group appears, grid rearranges)
+                        renderSolvedGroups();
+                        renderGrid(); 
                         saveProgress();
+                        
                         if (solvedGroups.length === 4) {
                             saveProgress('finished');
                             setTimeout(showWinState, 500);
                         }
-                    }, 300);
-                }, 600);
+                    }, 300); // Wait for fade
+                }, 600); // Wait for move animation (0.6s)
 
             } else {
                 gameHistory.push({ type: 'wrong' });
@@ -713,11 +730,9 @@
         }
 
         function useHint() {
-            // Find unsolved groups
             const unsolvedIndices = gameData.groups.map((g, i) => i).filter(i => !solvedGroups.includes(i));
             if (unsolvedIndices.length === 0) return;
 
-            // Reset Logic Check
             if (currentHintGroup !== null && solvedGroups.includes(currentHintGroup)) {
                 currentHintGroup = null; hintWordsShownCount = 0;
             }
@@ -726,7 +741,6 @@
                 hintWordsShownCount = 0;
             }
             
-            // Limit Check
             if (hintWordsShownCount >= 3) {
                 updateHintBtnState();
                 return;
@@ -743,7 +757,6 @@
                 tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
                 card.appendChild(tri);
 
-                // Update State
                 hintedWords.push(card.dataset.word);
                 hintWordsShownCount++;
                 hintUsedCount++;
@@ -765,25 +778,29 @@
         }
 
         function shuffleWords() {
+            // 1. Reset Selection FIRST (Fixes Bug)
+            selectedWords = [];
+            document.getElementById('submitBtn').disabled = true;
+
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
             
-            // 1. Get Old Positions
+            // 2. Get Old Positions
             const oldPositions = cards.map(c => {
                 const r = c.getBoundingClientRect();
                 return { card: c, x: r.left, y: r.top };
             });
 
-            // 2. Shuffle Data
+            // 3. Shuffle Data
             for (let i = currentWords.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
-            // 3. Render New Grid
-            renderGameUI(); // Re-creates DOM elements
+            // 4. Render Grid ONLY (Not solved groups)
+            renderGrid();
             
-            // 4. Animate
+            // 5. Animate
             const newCards = Array.from(grid.children);
             requestAnimationFrame(() => {
                 newCards.forEach(newCard => {
@@ -794,14 +811,11 @@
                         const dx = oldPos.x - newRect.left;
                         const dy = oldPos.y - newRect.top;
                         
-                        // Set start position
                         newCard.style.transition = 'none';
                         newCard.style.transform = `translate(${dx}px, ${dy}px)`;
                         
-                        // Force Reflow
                         void newCard.offsetWidth;
                         
-                        // Animate to end
                         requestAnimationFrame(() => {
                             newCard.style.transition = 'transform 0.5s ease';
                             newCard.style.transform = '';
@@ -817,7 +831,6 @@
             userProgress[currentGameDateStr] = {
                 status: status || (solvedGroups.length === 4 ? 'finished' : 'playing'),
                 guessCount, hintUsedCount, solvedGroups, gameHistory,
-                // Save Hint State
                 currentHintGroup, hintWordsShownCount, hintedWords
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(userProgress));
