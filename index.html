@@ -66,7 +66,7 @@
 
         .daily-game-card {
             background: #1e293b;
-            border: 3px solid #334155; /* ขอบหนาขึ้น */
+            border: 3px solid #334155;
             border-radius: 12px;
             padding: 12px 20px;
             width: auto; 
@@ -123,7 +123,6 @@
             width: fit-content;
             min-width: 180px;
         }
-        /* เอาเมาส์จ่อเมนูอื่นไม่ต้องมีขอบ */
         .menu-item:hover { 
             background: rgba(255,255,255,0.05); 
             color: white; 
@@ -132,12 +131,11 @@
         /* --- 3. CALENDAR SYSTEM --- */
         .calendar-header {
             display: flex;
-            align-items: stretch; /* ให้ปุ่มสูงเท่ากัน */
+            align-items: stretch;
             padding: 5px 10px 15px 10px;
             gap: 5px;
         }
         
-        /* ปุ่มซ้ายขวา และชื่อเดือน ชิดกัน */
         .cal-nav-btn {
             background: #1e293b; 
             border: none; color: white;
@@ -146,20 +144,19 @@
             display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
         }
-        /* เมาส์จ่อแล้วไม่โปร่งใส */
         .cal-nav-btn:hover:not(:disabled) { background: #334155; opacity: 1; }
         .cal-nav-btn:disabled { opacity: 0.2; cursor: default; background: transparent; }
 
         .cal-title {
-            background: #1e293b;
+            background: transparent; /* แก้ไข: โปร่งใสตามสั่ง */
             font-size: 1.1em; font-weight: 700; cursor: pointer;
             padding: 10px; border-radius: 8px; 
-            flex: 1; /* ขยายเต็มพื้นที่ */
+            flex: 1;
             text-align: center;
             display: flex; align-items: center; justify-content: center;
             transition: background 0.2s;
         }
-        .cal-title:hover { background: #334155; }
+        .cal-title:hover { background: #334155; } /* จ่อแล้วทึบ */
 
         .calendar-grid { 
             display: grid; 
@@ -180,30 +177,21 @@
         .day-cell.today-marker { border: 2px solid var(--primary-blue); box-shadow: 0 0 5px rgba(0,154,254,0.3); }
         .day-cell.future, .day-cell.no-data { opacity: 0.2; cursor: default; pointer-events: none; }
 
-        /* Month Selector View */
         .month-grid {
             display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
             margin-top: 10px; padding: 0 10px;
         }
         .month-cell {
-            background: transparent; /* พื้นหลังโปร่งใสก่อน */
+            background: transparent;
             border: 1px solid transparent;
             padding: 15px 5px;
             border-radius: 8px; text-align: center; cursor: pointer;
             font-size: 0.9em; font-weight: 600;
             transition: 0.2s;
         }
-        /* เมาส์จ่อแล้วค่อยมีสี */
         .month-cell:hover:not(.disabled) { background: var(--card-hover); color: white; }
         .month-cell.active { background: var(--primary-blue) !important; color: white; }
-        
-        /* เดือนที่ไม่มีโจทย์ จางและกดไม่ได้ */
-        .month-cell.disabled {
-            opacity: 0.2;
-            cursor: default;
-            pointer-events: none;
-        }
-
+        .month-cell.disabled { opacity: 0.2; cursor: default; pointer-events: none; }
 
         /* --- 4. GAME SCREEN --- */
         .screen { display: none; }
@@ -216,8 +204,6 @@
 
         .stats-row { display: flex; justify-content: space-between; margin-bottom: 15px; color: white; font-weight: 700; font-size: 0.95em; }
         .stats-val { font-weight: 400; margin: 0 4px; color: white; }
-        
-        /* เว้นระยะห่าง ทาย กับ วันที่ ให้เหมือนกัน */
         .stats-spacer { margin-right: 15px; }
 
         .game-controls { display: flex; gap: 8px; }
@@ -226,18 +212,25 @@
             padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
         }
         .btn-small:hover:not(:disabled) { background: #475569; }
+        .btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 20px; }
+        
         .word-card {
             background: var(--card-bg); border-radius: 8px; height: var(--card-height);
             display: flex; align-items: center; justify-content: center;
             text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
-            transition: 0.15s; user-select: none; padding: 2px;
+            user-select: none; padding: 2px;
+            /* แก้ไข: เพิ่ม position relative เพื่อให้คำใบ้อยู่ในกรอบ และ transition */
+            position: relative; 
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
         }
-        .word-card:hover:not(.selected) { background: var(--card-hover); }
+        .word-card:hover:not(.selected):not(.solved) { background: var(--card-hover); }
         .word-card.selected { background: var(--primary-blue); color: white; }
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
         .word-card.fade-out { opacity: 0; transform: scale(0.9); transition: 0.3s; }
+        /* Class สำหรับตอนบิน */
+        .word-card.animating { z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
@@ -274,7 +267,6 @@
 <body>
 
     <div class="container">
-        
         <div id="mainMenu" class="screen active">
             <div class="main-menu">
                 <div class="logo-section">
@@ -282,7 +274,6 @@
                     <div class="game-logo-text">CONEXOTH</div>
                     <div class="game-subtitle">จัดกลุ่มคำที่เกี่ยวข้องกัน</div>
                 </div>
-
                 <div class="daily-game-wrapper">
                     <div class="daily-game-card">
                         <div class="daily-text-group">
@@ -292,7 +283,6 @@
                         <button class="play-btn-small" onclick="startDailyGame()">Play</button>
                     </div>
                 </div>
-
                 <div class="menu-list">
                     <button class="menu-item" onclick="openCalendar()">
                         <i class="fa-regular fa-calendar"></i> เล่นย้อนหลัง
@@ -316,13 +306,11 @@
                 <div class="screen-title">เล่นย้อนหลัง</div>
                 <div style="width: 30px;"></div>
             </div>
-
             <div class="calendar-header">
                 <button class="cal-nav-btn" id="prevBtn" onclick="shiftCalendar(-1)"><i class="fa-solid fa-chevron-left"></i></button>
                 <div class="cal-title" id="calTitleBtn" onclick="toggleMonthView()">February 2026</div>
                 <button class="cal-nav-btn" id="nextBtn" onclick="shiftCalendar(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
-
             <div id="daysView">
                 <div class="calendar-grid">
                     <div class="day-name">อา</div><div class="day-name">จ</div><div class="day-name">อ</div>
@@ -330,7 +318,6 @@
                 </div>
                 <div id="calendarDays" class="calendar-grid" style="margin-top: 5px;"></div>
             </div>
-
             <div id="monthsView" style="display: none;">
                 <div class="month-grid" id="monthList"></div>
             </div>
@@ -374,7 +361,6 @@
             
             <button class="btn-submit" id="submitBtn" disabled onclick="checkAnswer()">ส่งคำตอบ</button>
         </div>
-
     </div>
 
     <script src="games.js"></script>
@@ -394,12 +380,12 @@
         let gameHistory = [];
         let currentHintGroup = null;
         let hintWordsShownCount = 0;
+        let hintedWords = []; // เก็บคำที่ถูกใบ้แล้ว
         let fromScreen = 'mainMenu';
 
         const STORAGE_KEY = 'conexo_th_progress';
         let userProgress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
 
-        // --- HELPER FUNCTIONS ---
         function getThaiDate() {
             return new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Bangkok"}));
         }
@@ -413,28 +399,21 @@
         }
 
         function formatDisplayDate(dateStr) {
-            // YYYY-MM-DD -> 4/2/2026
             const [y, m, d] = dateStr.split('-');
             return `${parseInt(d)}/${parseInt(m)}/${y}`;
         }
 
         function hasGamesInMonth(year, monthIndex) {
-            // monthIndex 0-11
-            // Check if gamesDatabase has any key starting with "YYYY-MM"
             const prefix = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
-            // ตรวจสอบว่ามีคีย์ไหนใน database ที่ขึ้นต้นด้วย prefix นี้ไหม
             return Object.keys(gamesDatabase).some(key => key.startsWith(prefix));
         }
 
-        // --- INIT ---
         function init() {
             const todayStr = getTodayStr();
             document.getElementById('dailyDateText').textContent = formatDisplayDate(todayStr);
-            // ตั้งค่าปฏิทินเริ่มต้นเป็นปัจจุบัน
             currentViewDate = getThaiDate(); 
         }
 
-        // --- NAVIGATION ---
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -457,20 +436,14 @@
             }
         }
 
-        // --- CALENDAR LOGIC ---
         function toggleMonthView() {
             isMonthPickerMode = !isMonthPickerMode;
             renderCalendar();
         }
 
         function shiftCalendar(delta) {
-            if (isMonthPickerMode) {
-                // ปีเปลี่ยนได้
-                currentViewDate.setFullYear(currentViewDate.getFullYear() + delta);
-            } else {
-                // เลื่อนเดือน
-                currentViewDate.setMonth(currentViewDate.getMonth() + delta);
-            }
+            if (isMonthPickerMode) currentViewDate.setFullYear(currentViewDate.getFullYear() + delta);
+            else currentViewDate.setMonth(currentViewDate.getMonth() + delta);
             renderCalendar();
         }
 
@@ -484,65 +457,39 @@
             const year = currentViewDate.getFullYear();
             const month = currentViewDate.getMonth();
             const todayStr = getTodayStr();
-            
             const monthNamesThai = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
             
             if (isMonthPickerMode) {
-                // YEAR VIEW (เลือกเดือน)
-                document.getElementById('calTitleBtn').textContent = `${year}`; // เอา (พ.ศ.) ออก
+                document.getElementById('calTitleBtn').textContent = `${year}`;
                 document.getElementById('daysView').style.display = 'none';
                 document.getElementById('monthsView').style.display = 'block';
-                
-                // เช็คว่าปีนี้มีโจทย์ไหม
-                const hasGamesThisYear = Object.keys(gamesDatabase).some(k => k.startsWith(`${year}`));
-                // ปุ่มซ้ายขวา (ปี) ถ้าไม่มีโจทย์เลยให้จาง (Logic คร่าวๆ)
-                // เพื่อความง่าย อนุญาตให้เลื่อนปีได้ แต่เดือนข้างในจะกดไม่ได้ถ้าไม่มีโจทย์
-
                 document.getElementById('prevBtn').disabled = false;
                 document.getElementById('nextBtn').disabled = false;
 
                 const monthList = document.getElementById('monthList');
                 monthList.innerHTML = '';
-                
                 monthNamesThai.forEach((mName, idx) => {
                     const el = document.createElement('div');
                     el.className = 'month-cell';
                     if (idx === month) el.classList.add('active');
-                    
-                    // เช็คว่าเดือนนี้มีโจทย์ไหม
                     const hasGame = hasGamesInMonth(year, idx);
-                    if (!hasGame) {
-                        el.classList.add('disabled'); // จางและกดไม่ได้
-                    }
-
+                    if (!hasGame) el.classList.add('disabled');
                     el.textContent = mName;
-                    el.onclick = () => {
-                        if (hasGame) selectMonth(idx);
-                    };
+                    el.onclick = () => { if (hasGame) selectMonth(idx); };
                     monthList.appendChild(el);
                 });
-
             } else {
-                // DAY VIEW
                 document.getElementById('calTitleBtn').textContent = `${monthNamesThai[month]} ${year}`;
                 document.getElementById('daysView').style.display = 'block';
                 document.getElementById('monthsView').style.display = 'none';
 
-                // Check Navigation Arrows availability
-                // Previous Month Check
                 let prevDate = new Date(year, month - 1, 1);
-                let hasPrevGames = hasGamesInMonth(prevDate.getFullYear(), prevDate.getMonth());
-                document.getElementById('prevBtn').disabled = !hasPrevGames;
-
-                // Next Month Check
+                document.getElementById('prevBtn').disabled = !hasGamesInMonth(prevDate.getFullYear(), prevDate.getMonth());
                 let nextDate = new Date(year, month + 1, 1);
-                let hasNextGames = hasGamesInMonth(nextDate.getFullYear(), nextDate.getMonth());
-                document.getElementById('nextBtn').disabled = !hasNextGames;
-
+                document.getElementById('nextBtn').disabled = !hasGamesInMonth(nextDate.getFullYear(), nextDate.getMonth());
 
                 const daysContainer = document.getElementById('calendarDays');
                 daysContainer.innerHTML = '';
-
                 const firstDay = new Date(year, month, 1).getDay();
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -553,26 +500,16 @@
                     const el = document.createElement('div');
                     el.className = 'day-cell';
                     el.textContent = i;
-
                     if (dStr === todayStr) el.classList.add('today-marker');
-
-                    if (dStr > todayStr) {
-                        el.classList.add('future'); 
-                    } else if (!gamesDatabase[dStr]) {
-                        el.classList.add('no-data'); 
-                    } else {
+                    if (dStr > todayStr) el.classList.add('future'); 
+                    else if (!gamesDatabase[dStr]) el.classList.add('no-data'); 
+                    else {
                         const prog = userProgress[dStr];
                         if (prog) {
-                            if (prog.status === 'finished') {
-                                el.classList.add('completed');
-                            } else if (prog.status === 'playing' && (prog.guessCount > 0 || prog.hintUsedCount > 0)) {
-                                el.classList.add('in-progress');
-                            } else {
-                                el.classList.add('available'); 
-                            }
-                        } else {
-                            el.classList.add('available'); 
-                        }
+                            if (prog.status === 'finished') el.classList.add('completed');
+                            else if (prog.status === 'playing' && (prog.guessCount > 0 || prog.hintUsedCount > 0)) el.classList.add('in-progress');
+                            else el.classList.add('available'); 
+                        } else el.classList.add('available'); 
                         el.onclick = () => loadGame(dStr);
                     }
                     daysContainer.appendChild(el);
@@ -580,19 +517,13 @@
             }
         }
 
-
-        // --- GAME ENGINE ---
         function startDailyGame() {
             fromScreen = 'mainMenu';
             loadGame(getTodayStr());
         }
 
         function loadGame(dateStr) {
-            if (!gamesDatabase[dateStr]) {
-                alert("ยังไม่มีโจทย์สำหรับวันนี้");
-                return;
-            }
-
+            if (!gamesDatabase[dateStr]) { alert("ยังไม่มีโจทย์สำหรับวันนี้"); return; }
             currentGameDateStr = dateStr;
             gameData = gamesDatabase[dateStr];
             document.getElementById('gameDateLabel').textContent = formatDisplayDate(dateStr);
@@ -603,6 +534,11 @@
                 hintUsedCount = saved.hintUsedCount || 0;
                 solvedGroups = saved.solvedGroups || [];
                 gameHistory = saved.gameHistory || [];
+                // Load Hint State
+                currentHintGroup = saved.currentHintGroup !== undefined ? saved.currentHintGroup : null;
+                hintWordsShownCount = saved.hintWordsShownCount || 0;
+                hintedWords = saved.hintedWords || [];
+
                 currentWords = [];
                 gameData.groups.forEach((g, i) => {
                     if (!solvedGroups.includes(i)) {
@@ -610,9 +546,9 @@
                     }
                 });
                 if (saved.status === 'playing') currentWords.sort(() => Math.random() - 0.5);
-
             } else {
                 guessCount = 0; hintUsedCount = 0; solvedGroups = []; gameHistory = [];
+                currentHintGroup = null; hintWordsShownCount = 0; hintedWords = [];
                 currentWords = [];
                 gameData.groups.forEach((g, i) => {
                     g.words.forEach(w => currentWords.push({ word: w, groupIndex: i }));
@@ -622,9 +558,6 @@
             }
 
             selectedWords = [];
-            currentHintGroup = null;
-            hintWordsShownCount = 0;
-            
             renderGameUI();
             showScreen('gameScreen');
 
@@ -634,6 +567,7 @@
                 document.getElementById('winCard').style.display = 'none';
                 document.getElementById('submitBtn').style.display = 'block';
                 document.getElementById('hintBtn').disabled = false;
+                updateHintBtnState();
             }
         }
 
@@ -663,12 +597,22 @@
                 c.dataset.word = obj.word;
                 c.dataset.group = obj.groupIndex;
                 c.onclick = () => selectCard(c);
+                
+                // ตรวจสอบว่าคำนี้ถูกใบ้ไปแล้วหรือยัง
+                if (hintedWords.includes(obj.word)) {
+                    const tri = document.createElement('div');
+                    tri.className = 'hint-triangle';
+                    tri.style.borderColor = `transparent ${gameData.groups[obj.groupIndex].color} transparent transparent`;
+                    c.appendChild(tri);
+                }
+                
                 grid.appendChild(c);
             });
+            updateHintBtnState();
         }
 
         function selectCard(card) {
-            if (card.classList.contains('fade-out')) return;
+            if (card.classList.contains('fade-out') || card.classList.contains('animating')) return;
             if (card.classList.contains('selected')) {
                 card.classList.remove('selected');
                 selectedWords = selectedWords.filter(c => c !== card);
@@ -693,33 +637,64 @@
                 gameHistory.push({ type: 'correct', color: group.color });
                 
                 const grid = document.getElementById('grid');
-                selectedWords.forEach(c => grid.insertBefore(c, grid.firstChild));
+                const allCards = Array.from(grid.children);
                 
-                requestAnimationFrame(() => {
-                    selectedWords.forEach(c => {
-                        c.classList.remove('selected');
-                        c.style.backgroundColor = group.color;
-                        c.style.color = 'white';
-                    });
-                    setTimeout(() => {
-                        selectedWords.forEach(c => c.classList.add('fade-out'));
-                        setTimeout(() => {
-                            solvedGroups.push(firstIdx);
-                            currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
-                            selectedWords = [];
-                            document.getElementById('submitBtn').disabled = true;
-                            currentHintGroup = null;
-                            hintWordsShownCount = 0;
-                            document.getElementById('hintBtn').disabled = false;
-                            renderGameUI(); 
-                            saveProgress();
-                            if (solvedGroups.length === 4) {
-                                saveProgress('finished');
-                                setTimeout(showWinState, 500);
-                            }
-                        }, 300);
-                    }, 600);
+                // --- FIX: Animation Logic ---
+                const orderedCards = [];
+                group.words.forEach(w => {
+                    const card = selectedWords.find(c => c.dataset.word === w);
+                    if(card) orderedCards.push(card);
                 });
+
+                const selectedIndices = orderedCards.map(c => allCards.indexOf(c));
+                const minIndex = Math.min(...selectedIndices);
+
+                orderedCards.forEach((card, index) => {
+                    const startRect = card.getBoundingClientRect();
+                    card.classList.remove('selected');
+                    card.classList.add('animating');
+                    card.style.background = group.color;
+                    card.style.color = 'white';
+                    card.style.transition = 'none'; // ปิด transition ชั่วคราว
+
+                    // คำนวณตำแหน่งปลายทาง (ให้วิ่งไปรวมกันที่การ์ดใบแรกของกลุ่ม)
+                    const destIndex = selectedIndices.sort((a,b)=>a-b)[index];
+                    const destCard = allCards[destIndex];
+                    const destRect = destCard.getBoundingClientRect();
+
+                    const deltaX = destRect.left - startRect.left;
+                    const deltaY = destRect.top - startRect.top;
+                    
+                    // Force Reflow
+                    void card.offsetWidth;
+
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.2, 0, 0, 1)';
+                    card.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                });
+                
+                // Reset Hint State if this group was the hint group
+                if (currentHintGroup === firstIdx) {
+                    currentHintGroup = null;
+                    hintWordsShownCount = 0;
+                    // ไม่ต้องลบ hintedWords เพราะคำพวกนั้นจะหายไปจากกระดานแล้ว
+                }
+
+                setTimeout(() => {
+                    orderedCards.forEach(c => c.classList.add('fade-out'));
+                    setTimeout(() => {
+                        solvedGroups.push(firstIdx);
+                        currentWords = currentWords.filter(w => w.groupIndex !== firstIdx);
+                        selectedWords = [];
+                        document.getElementById('submitBtn').disabled = true;
+                        
+                        renderGameUI(); 
+                        saveProgress();
+                        if (solvedGroups.length === 4) {
+                            saveProgress('finished');
+                            setTimeout(showWinState, 500);
+                        }
+                    }, 300);
+                }, 600);
 
             } else {
                 gameHistory.push({ type: 'wrong' });
@@ -738,9 +713,11 @@
         }
 
         function useHint() {
+            // Find unsolved groups
             const unsolvedIndices = gameData.groups.map((g, i) => i).filter(i => !solvedGroups.includes(i));
             if (unsolvedIndices.length === 0) return;
 
+            // Reset Logic Check
             if (currentHintGroup !== null && solvedGroups.includes(currentHintGroup)) {
                 currentHintGroup = null; hintWordsShownCount = 0;
             }
@@ -748,8 +725,10 @@
                 currentHintGroup = unsolvedIndices[Math.floor(Math.random() * unsolvedIndices.length)];
                 hintWordsShownCount = 0;
             }
+            
+            // Limit Check
             if (hintWordsShownCount >= 3) {
-                document.getElementById('hintBtn').disabled = true;
+                updateHintBtnState();
                 return;
             }
 
@@ -764,28 +743,82 @@
                 tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
                 card.appendChild(tri);
 
+                // Update State
+                hintedWords.push(card.dataset.word);
                 hintWordsShownCount++;
                 hintUsedCount++;
                 gameHistory.push({ type: 'hint' });
+                
                 document.getElementById('hintCount').textContent = hintUsedCount;
-                if (hintWordsShownCount >= 3) document.getElementById('hintBtn').disabled = true;
+                updateHintBtnState();
                 saveProgress('playing');
+            }
+        }
+        
+        function updateHintBtnState() {
+            const btn = document.getElementById('hintBtn');
+            if (hintWordsShownCount >= 3 || solvedGroups.length === 4) {
+                btn.disabled = true;
+            } else {
+                btn.disabled = false;
             }
         }
 
         function shuffleWords() {
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
-            for (let i = cards.length; i >= 0; i--) {
-                grid.appendChild(grid.children[Math.random() * i | 0]);
+            
+            // 1. Get Old Positions
+            const oldPositions = cards.map(c => {
+                const r = c.getBoundingClientRect();
+                return { card: c, x: r.left, y: r.top };
+            });
+
+            // 2. Shuffle Data
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
+            
+            // 3. Render New Grid
+            renderGameUI(); // Re-creates DOM elements
+            
+            // 4. Animate
+            const newCards = Array.from(grid.children);
+            requestAnimationFrame(() => {
+                newCards.forEach(newCard => {
+                    const word = newCard.dataset.word;
+                    const oldPos = oldPositions.find(p => p.card.dataset.word === word);
+                    if(oldPos) {
+                        const newRect = newCard.getBoundingClientRect();
+                        const dx = oldPos.x - newRect.left;
+                        const dy = oldPos.y - newRect.top;
+                        
+                        // Set start position
+                        newCard.style.transition = 'none';
+                        newCard.style.transform = `translate(${dx}px, ${dy}px)`;
+                        
+                        // Force Reflow
+                        void newCard.offsetWidth;
+                        
+                        // Animate to end
+                        requestAnimationFrame(() => {
+                            newCard.style.transition = 'transform 0.5s ease';
+                            newCard.style.transform = '';
+                        });
+                    }
+                });
+            });
+            saveProgress('playing');
         }
 
         function saveProgress(status) {
             if (!currentGameDateStr) return;
             userProgress[currentGameDateStr] = {
                 status: status || (solvedGroups.length === 4 ? 'finished' : 'playing'),
-                guessCount, hintUsedCount, solvedGroups, gameHistory
+                guessCount, hintUsedCount, solvedGroups, gameHistory,
+                // Save Hint State
+                currentHintGroup, hintWordsShownCount, hintedWords
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(userProgress));
         }
