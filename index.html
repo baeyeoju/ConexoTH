@@ -17,7 +17,7 @@
             --text-muted: #94a3b8;
             --success-green: #22c55e;
             --progress-yellow: #eab308;
-            --card-height: 70px;
+            --card-height: 60px;
             --gap-size: 6px;
         }
 
@@ -31,11 +31,12 @@
             color: var(--text-color);
             display: flex;
             justify-content: center;
-            font-size: 18px; 
+            /* ลดขนาดฟอนต์ลงเล็กน้อย (จาก 18px -> 16px) */
+            font-size: 16px; 
         }
 
         .container {
-            max-width: 560px;
+            max-width: 500px; /* ปรับความกว้างให้เหมาะสมกับฟอนต์ใหม่ */
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -64,7 +65,7 @@
             border-radius: 16px;
             padding: 15px 25px;
             width: auto; 
-            min-width: 320px; 
+            min-width: 300px; 
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -74,8 +75,8 @@
         .daily-game-card:hover { transform: none; border-color: #ffffff; }
 
         .daily-text-group { display: flex; flex-direction: column; text-align: left; }
-        .daily-label { font-size: 1.1em; font-weight: 700; color: white; }
-        .daily-date { font-size: 0.9em; color: var(--text-muted); margin-top: 4px; }
+        .daily-label { font-size: 1.2em; font-weight: 700; color: white; }
+        .daily-date { font-size: 1em; color: var(--text-muted); margin-top: 4px; }
 
         .play-btn-small {
             background: var(--primary-blue);
@@ -93,7 +94,7 @@
         .menu-list { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .menu-item {
             background: transparent; color: var(--text-muted); border: 1px solid transparent;
-            padding: 12px 25px; font-size: 1em; font-weight: 600; cursor: pointer;
+            padding: 12px 25px; font-size: 1.1em; font-weight: 600; cursor: pointer;
             display: flex; align-items: center; justify-content: center; gap: 10px;
             border-radius: 12px; transition: all 0.25s; width: fit-content; min-width: 200px;
         }
@@ -119,15 +120,22 @@
         .calendar-grid { 
             display: grid; 
             grid-template-columns: repeat(7, 1fr); 
-            gap: 4px; 
-            padding: 0 20px; 
+            gap: 2px; /* ลดช่องว่างระหว่าง column */
+            padding: 0 10px; 
         }
-        .day-name { text-align: center; color: #64748b; font-size: 0.75em; margin-bottom: 5px; font-weight: bold; }
+        .day-name { text-align: center; color: #64748b; font-size: 0.8em; margin-bottom: 5px; font-weight: bold; }
+        
+        /* ปรับปุ่มวันที่ให้เล็กลงและคงที่ */
         .day-cell {
-            aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
-            border-radius: 8px; font-weight: bold; position: relative;
+            width: 40px;  /* กำหนดขนาดตายตัว */
+            height: 40px; /* กำหนดขนาดตายตัว */
+            margin: 2px auto; /* จัดกึ่งกลางในช่อง Grid */
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; 
+            font-weight: bold; position: relative;
             background: transparent; border: 1px solid transparent;
-            cursor: pointer; transition: all 0.25s; font-size: 0.8em; 
+            cursor: pointer; transition: all 0.25s; 
+            font-size: 0.9em;
         }
         .day-cell.completed { background: var(--success-green); color: white; }
         .day-cell.in-progress { background: var(--progress-yellow); color: #0f172a; }
@@ -160,7 +168,7 @@
             margin-bottom: 20px; 
             color: white; 
             font-weight: 700; 
-            font-size: 0.85em;
+            font-size: 0.9em;
             white-space: nowrap;
         }
         .stats-val { font-weight: 400; margin: 0 2px; color: white; }
@@ -169,7 +177,7 @@
         .game-controls { display: flex; gap: 8px; }
         .btn-small {
             background: #334155; color: white; border: none;
-            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85em;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85em;
         }
         .btn-small:hover:not(:disabled) { background: #475569; }
         .btn-small:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -179,10 +187,9 @@
         .word-card {
             background: var(--card-bg); border-radius: 8px; height: var(--card-height);
             display: flex; align-items: center; justify-content: center;
-            text-align: center; cursor: pointer; font-weight: 500; font-size: 0.95em;
+            text-align: center; cursor: pointer; font-weight: 500; font-size: 1em;
             user-select: none; padding: 2px;
             position: relative; 
-            /* Transition มาตรฐาน 0.25s สำหรับการเลือก */
             transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
         }
         .word-card:hover:not(.selected):not(.solved):not(.animating) { background: var(--card-hover); }
@@ -190,12 +197,11 @@
         .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
         .word-card.fade-out { opacity: 0; pointer-events: none; }
         
-        /* Ghost Card for Animation */
         .ghost-card {
             position: absolute; z-index: 999;
             background: var(--card-bg); border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            text-align: center; font-weight: 500; font-size: 0.95em; color: white;
+            text-align: center; font-weight: 500; font-size: 1em; color: white;
             transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1), opacity 0.25s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             pointer-events: none;
@@ -231,7 +237,6 @@
             background: #334155; margin-bottom: 8px; padding: 5px 10px; border-radius: 8px;
             text-align: center; height: var(--card-height); display: flex; flex-direction: column; justify-content: center;
         }
-        /* Fade In 0.5s ตามที่ขอ */
         .solved-group.new-reveal { animation: fadeOnly 0.5s ease forwards; }
 
         @keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
@@ -351,7 +356,7 @@
         let hintUsedCount = 0;
         let gameHistory = [];
         let currentHintGroup = null;
-        let hintWordsShownCount = 0; // จำนวนคำที่เปิดไปแล้วในกลุ่มนี้
+        let hintWordsShownCount = 0;
         let hintedWords = [];
         let fromScreen = 'mainMenu';
 
@@ -654,7 +659,6 @@
                 grid.appendChild(fragment);
 
                 const lastRects = new Map();
-                // Get children again to be sure of order
                 Array.from(grid.children).forEach(c => lastRects.set(c, c.getBoundingClientRect()));
 
                 Array.from(grid.children).forEach(c => {
@@ -740,45 +744,31 @@
                 hintWordsShownCount = 0;
             }
             
-            // Logic คำใบ้: ถ้าเปิดไปแล้ว 3 คำ (หรือมากกว่า) ให้หยุด
             if (hintWordsShownCount >= 3) {
                 updateHintBtnState();
                 return;
             }
 
-            // Logic จำนวนคำที่จะเปิด: ถ้ายังไม่เคยเปิด (0) ให้เปิด 2 คำ, ถ้าเปิดแล้วให้เปิดเพิ่ม 1 คำ
-            let countToReveal = (hintWordsShownCount === 0) ? 2 : 1;
-
-            // หาการ์ดที่ยังไม่ได้เปิดใบ้
-            let validCards = Array.from(document.querySelectorAll('.word-card')).filter(c => 
+            const targets = Array.from(document.querySelectorAll('.word-card')).filter(c => 
                 parseInt(c.dataset.group) === currentHintGroup && !c.querySelector('.hint-triangle')
             );
 
-            // สุ่มเปิดตามจำนวน
-            for(let i=0; i<countToReveal; i++) {
-                if(validCards.length === 0) break;
-                
-                const randIdx = Math.floor(Math.random() * validCards.length);
-                const card = validCards[randIdx];
-                
-                // Remove from list so we don't pick again immediately
-                validCards.splice(randIdx, 1);
-
+            if (targets.length > 0) {
+                const card = targets[Math.floor(Math.random() * targets.length)];
                 const tri = document.createElement('div');
                 tri.className = 'hint-triangle';
                 tri.style.borderColor = `transparent ${gameData.groups[currentHintGroup].color} transparent transparent`;
                 card.appendChild(tri);
 
                 hintedWords.push(card.dataset.word);
-                hintWordsShownCount++; // เพิ่ม counter
+                hintWordsShownCount++;
+                hintUsedCount++;
+                gameHistory.push({ type: 'hint' });
+                
+                document.getElementById('hintCount').textContent = hintUsedCount;
+                updateHintBtnState();
+                saveProgress('playing');
             }
-
-            hintUsedCount++;
-            gameHistory.push({ type: 'hint' });
-            
-            document.getElementById('hintCount').textContent = hintUsedCount;
-            updateHintBtnState();
-            saveProgress('playing');
         }
         
         function updateHintBtnState() {
@@ -791,8 +781,10 @@
         }
 
         function shuffleWords() {
+            // 1. Remember selection
             const selectedValues = selectedWords.map(c => c.dataset.word);
             
+            // 2. Old Positions
             const grid = document.getElementById('grid');
             const cards = Array.from(grid.children);
             const oldPositions = cards.map(c => {
@@ -800,13 +792,16 @@
                 return { word: c.dataset.word, x: r.left, y: r.top };
             });
 
+            // 3. Shuffle Data
             for (let i = currentWords.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
+            // 4. Render Grid (Pass selection logic inside)
             renderGrid();
             
+            // 5. Animate
             const newCards = Array.from(grid.children);
             requestAnimationFrame(() => {
                 newCards.forEach(newCard => {
@@ -824,7 +819,6 @@
                         void newCard.offsetWidth;
                         
                         requestAnimationFrame(() => {
-                            // สั่ง animation
                             newCard.style.transition = 'transform 0.5s ease';
                             newCard.style.transform = '';
                         });
