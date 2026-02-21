@@ -188,20 +188,21 @@
             display: flex; align-items: center; justify-content: center;
             text-align: center; cursor: pointer; font-weight: 500; font-size: 1em;
             user-select: none; padding: 2px; position: relative; 
-            transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+            /* เพิ่มขอบโปร่งใส และ overflow:hidden เพื่อกันมุมสามเหลี่ยมล้น และกันเฟรมสั่น */
+            border: 2px solid transparent;
+            overflow: hidden;
+            transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1), background-color 0.25s ease, color 0.25s ease, border-color 0.2s ease;
         }
         .word-card:hover:not(.selected):not(.solved):not(.animating) { background: var(--card-hover); }
         .word-card.selected { background: var(--primary-blue); color: white; }
-        .word-card.incorrect { animation: shake 0.4s; background: #ef4444 !important; }
-        .word-card.fade-out { opacity: 0; pointer-events: none; }
         
-        .ghost-card {
-            position: absolute; z-index: 999; background: var(--card-bg); border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            text-align: center; font-weight: 500; font-size: 1em; color: white;
-            transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1), opacity 0.25s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); pointer-events: none;
+        /* แก้ไข: อนิเมชันตอนตอบผิด (สั่น + ขอบแดง พื้นหลังปกติ) */
+        .word-card.incorrect { 
+            animation: shake 0.4s; 
+            border-color: #b91c1c !important; 
+            background: var(--card-bg) !important;
         }
+        .word-card.fade-out { opacity: 0; pointer-events: none; }
         
         @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-5px)} 40%{transform:translateX(5px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)} }
 
@@ -214,7 +215,6 @@
         .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-submit.game-over { opacity: 0.5; cursor: default; background: #0f172a; border-color: #1e293b; }
 
-        /* Author Credit - แก้ไขสีขาวจั๊วะ (เอา Opacity ออก) */
         .credit-text {
             text-align: center; color: white; font-size: 0.9em;
             margin-top: 20px; margin-bottom: 20px;
@@ -276,22 +276,14 @@
         }
         .modal-title { font-size: 1.5em; font-weight: bold; margin-bottom: 20px; }
         
-        /* How to Play Specifics */
         .htp-section { margin-bottom: 20px; text-align: center; }
-        .htp-grid-example {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0;
-        }
+        .htp-grid-example { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0; }
         
-        /* การ์ดในวิธีเล่น */
         .htp-card {
             background: #1e293b; border-radius: 6px; padding: 10px 2px;
             font-size: 0.8em; text-align: center; border: 1px solid transparent;
         }
-        /* เพิ่ม Class สำหรับการ์ดที่ถูกเลือก (สีฟ้า) */
-        .htp-card.selected {
-            background: var(--primary-blue);
-            color: white;
-        }
+        .htp-card.selected { background: var(--primary-blue); color: white; }
 
         .htp-block {
             border-radius: 8px; padding: 10px; margin: 5px 0;
@@ -336,7 +328,7 @@
                 </div>
 
                 <div class="social-row">
-                    <a href="https://discord.gg/BzXTF3y5Rg" target="_blank" class="social-btn discord">
+                    <a href="https://discord.gg/yourinvitecode" target="_blank" class="social-btn discord">
                         <i class="fa-brands fa-discord"></i>
                     </a>
                     <div class="social-btn" onclick="shareGameLink()">
@@ -846,12 +838,20 @@
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         Array.from(grid.children).forEach(c => {
-                            // ปรับเวลาวิ่งเป็น 0.8s
                             c.style.transition = 'transform 0.8s cubic-bezier(0.2, 0, 0, 1)';
                             c.style.transform = ''; 
                         });
                     });
                 });
+
+                // เคลียร์ inline transition คืนค่ากลับให้ CSS จัดการต่อหลังวิ่งเสร็จ
+                setTimeout(() => {
+                    Array.from(grid.children).forEach(c => {
+                        if (!correctCardsDOM.includes(c)) {
+                            c.style.transition = '';
+                        }
+                    });
+                }, 800);
 
                 if (currentHintGroup === firstIdx) {
                     currentHintGroup = null; hintWordsShownCount = 0;
@@ -869,6 +869,9 @@
 
                     document.getElementById('submitBtn').disabled = true;
                     
+                    // อัปเดตปุ่มคำใบ้เผื่อมีกลุ่มที่ค้างอยู่
+                    updateHintBtnState();
+                    
                     saveProgress();
                     
                     if (solvedGroups.length === 4) {
@@ -879,16 +882,17 @@
                 }, 1300);
 
             } else {
+                // อนิเมชันตอนตอบผิด (แก้ไขสีฟ้าให้หายไปทันที และโชว์กรอบแดง)
                 gameHistory.push({ type: 'wrong' });
                 selectedWords.forEach(c => {
-                    c.classList.add('incorrect');
+                    c.classList.remove('selected'); // เอาสีฟ้าออกทันที
+                    c.classList.add('incorrect');   // ใส่ขอบแดง+สั่น
                     setTimeout(() => c.classList.remove('incorrect'), 500);
                 });
                 setTimeout(() => {
-                    selectedWords.forEach(c => c.classList.remove('selected'));
                     selectedWords = [];
                     document.getElementById('submitBtn').disabled = true;
-                }, 600);
+                }, 500);
                 saveProgress('playing');
             }
             document.getElementById('guessCount').textContent = guessCount;
@@ -1031,7 +1035,15 @@
         }
 
         function shareStats() {
-            const text = `ConexoTH ${formatDisplayDate(currentGameDateStr)}\nทาย: ${guessCount} | คำใบ้: ${hintUsedCount}\n${document.getElementById('winHistory').textContent}\nเล่น ConexoTH: https://conexo-th.vercel.app/`;
+            const url = "https://conexo-th.vercel.app/"; 
+            const dateStr = formatDisplayDate(currentGameDateStr);
+            const historyStr = document.getElementById('winHistory').textContent;
+            const guess = guessCount;
+            const hint = hintUsedCount;
+
+            const text = `ConexoTH ${dateStr}\nทาย: ${guess} | คำใบ้: ${hint}\n${historyStr}\nเล่น ConexoTH: ${url}`;
+
+            // ในหน้าเกมบังคับให้ Copy เท่านั้น ไม่ใช้ Share sheet เพื่อให้เหมือนในคอม
             navigator.clipboard.writeText(text).then(() => {
                 const btn = document.getElementById('shareBtn');
                 btn.innerHTML = '<i class="fa-solid fa-check"></i> คัดลอกแล้ว!';
